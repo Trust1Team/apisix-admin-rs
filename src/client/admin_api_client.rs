@@ -1,7 +1,7 @@
-//! In Apache APISIX, the control API is used to:
+//! In Apache APISIX, the admin API is used to:
 //!
-//! Expose the internal state of APISIX.
-//! Control the behavior of a single, isolated APISIX data plane.
+//! The Admin API lets users control their deployed Apache APISIX instance.
+//! The architecture design gives an idea about how everything fits together.
 
 use crate::models::common::{SemanticsIdentifier};
 use crate::models::session::SessionStatus;

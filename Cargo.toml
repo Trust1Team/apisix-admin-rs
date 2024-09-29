@@ -20,8 +20,12 @@ edition = "2021"
 crate-type = ["lib"]
 
 [[example]]
-name = "apisix"
-path = "examples/apisix.rs"
+name = "apisix-admin"
+path = "examples/apisix_admin.rs"
+
+[[example]]
+name = "apisix-ctrl"
+path = "examples/apisix_ctrl.rs"
 
 [dependencies]
 anyhow = "1.0.81"

@@ -11,7 +11,14 @@ async fn main() -> Result<()> {
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-    info!("===Example::Apisix Client===");
+    admin_ucs().await?;
+
+    Ok(())
+}
+
+#[instrument]
+async fn admin_ucs() -> Result<()> {
+    info!("===Example::Apisix Admin Client===");
 
     /// Get default Config (from environment variables)
     /// let cfg = get_config_from_env().await;
@@ -25,6 +32,6 @@ async fn main() -> Result<()> {
         Err(e) => error!("Error checking Admin API: {:?}", e)
     }
 
-    info!("===Example::Apisix Client END===");
+    info!("===Example::Apisix Admin Client END===");
     Ok(())
 }
