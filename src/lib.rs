@@ -16,7 +16,7 @@ mod client_controller;
 
 /// Common models are exposed
 pub use models::common;
-
+use crate::client_controller::ctrl_admin_check_version;
 
 /// Get configuration based on the environment variables (default config override)
 /// Function will panic when the environment variables are not set
@@ -35,6 +35,10 @@ pub async fn get_config_from_env() -> ApisixConfig {
 /// Function is used during development, and in combination with a Smart ID demo client application
 pub async fn get_config_default() -> ApisixConfig {
     ApisixConfig::default()
+}
+
+pub async fn admin_check(cfg: ApisixConfig) -> Result<()> {
+    ctrl_admin_check_version(&cfg).await
 }
 
 

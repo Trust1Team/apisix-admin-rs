@@ -32,25 +32,6 @@ pub struct AuthenticationSessionRequest {
     pub request_properties: Option<RequestProperties>,
 }
 
-impl AuthenticationSessionRequest {
-    pub async fn new(cfg: &ApisixConfig, interactions: Vec<Interaction>, hash: impl Into<String>, hash_type: HashType) -> Result<Self> {
-        /// At least one interaction is needed for every authentication request
-        if interactions.len() == 0 {
-            return Err(ApisixClientError::ConfigMissingException("Define at least 1 interaction for an authentication request").into());
-        };
-
-        Ok(AuthenticationSessionRequest {
-            relying_party_uuid: Some(cfg.relying_party_uuid.clone()),
-            relying_party_name: Some(cfg.relying_party_name.clone()),
-            certificate_level: CertificateLevel::QUALIFIED.into(),
-            interaction_order: Some(interactions),
-            hash: Some(hash.into()),
-            hash_type: Some(hash_type),
-            ..Self::default()
-        })
-    }
-}
-
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde_with::skip_serializing_none]
 pub struct SignatureSessionRequest {
@@ -79,25 +60,6 @@ pub struct SignatureSessionRequest {
     pub request_properties: Option<RequestProperties>,
 }
 
-impl SignatureSessionRequest {
-    pub async fn new(cfg: &ApisixConfig, interactions: Vec<Interaction>, hash: impl Into<String>, hash_type: HashType) -> Result<Self> {
-        /// At least one interaction is needed for every authentication request
-        if interactions.len() == 0 {
-            return Err(ApisixClientError::ConfigMissingException("Define at least 1 interaction for an authentication request").into());
-        };
-
-        Ok(SignatureSessionRequest {
-            relying_party_uuid: Some(cfg.relying_party_uuid.clone()),
-            relying_party_name: Some(cfg.relying_party_name.clone()),
-            certificate_level: CertificateLevel::QUALIFIED.into(),
-            interaction_order: Some(interactions),
-            hash: Some(hash.into()),
-            hash_type: Some(hash_type),
-            ..Self::default()
-        })
-    }
-}
-
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde_with::skip_serializing_none]
 pub struct CertificateRequest {
@@ -112,26 +74,6 @@ pub struct CertificateRequest {
     pub capabilities: Option<Vec<String>>, //todo not sure as Set is generic interface
     #[serde(rename = "requestProperties")]
     pub request_properties: Option<RequestProperties>,
-}
-
-impl CertificateRequest {
-    pub async fn new(cfg: &ApisixConfig) -> Self {
-        CertificateRequest {
-            relying_party_uuid: Some(cfg.relying_party_uuid.clone()),
-            relying_party_name: Some(cfg.relying_party_name.clone()),
-            certificate_level: CertificateLevel::QUALIFIED.into(),
-            ..Self::default()
-        }
-    }
-
-    pub  async fn new_with_level(cfg: &ApisixConfig, level: CertificateLevel) -> Self {
-        CertificateRequest {
-            relying_party_uuid: Some(cfg.relying_party_uuid.clone()),
-            relying_party_name: Some(cfg.relying_party_name.clone()),
-            certificate_level: CertificateLevel::QUALIFIED.into(),
-            ..Self::default()
-        }
-    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

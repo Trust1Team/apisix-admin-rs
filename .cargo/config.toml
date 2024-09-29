@@ -1,8 +1,9 @@
 [env]
-RUST_LOG = "hyper=none,apisix_admin_rs=debug"
+RUST_LOG = "info"
 
 APISIX_URL = "http://localhost:9080"
 APISIX_ADMIN_URL = "http://localhost:9180"
 APISIX_CONTROL_URL = "http://localhost:9090"
-APISIX_ADMIN_PATH = "/apisix/admin"
-
+# Default admin apikey
+APISIX_ADMIN_API_KEY = "edd1c9f034335f136f87ad84b625c8f1"
+CLIENT_REQ_NETWORK_TIMEOUT_MILLIS= "30000"

@@ -12,12 +12,16 @@ categories = ["api-bindings"]
 readme = "README.MD"
 
 [lib]
-name = "apisi_admin_client"
+name = "apisix_admin_client"
 path = "src/lib.rs"
 test = true
 doc = true
 edition = "2021"
 crate-type = ["lib"]
+
+[[example]]
+name = "apisix"
+path = "examples/apisix.rs"
 
 [dependencies]
 anyhow = "1.0.81"
