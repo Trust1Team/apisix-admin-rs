@@ -1,0 +1,8 @@
+[env]
+RUST_LOG = "hyper=none,apisix_admin_rs=debug"
+
+APISIX_URL = "http://localhost:9080"
+APISIX_ADMIN_URL = "http://localhost:9180"
+APISIX_CONTROL_URL = "http://localhost:9090"
+APISIX_ADMIN_PATH = "/apisix/admin"
+
