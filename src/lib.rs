@@ -7,17 +7,19 @@
 use anyhow::Result;
 use serde_json::Value;
 use crate::config::ApisixConfig;
-
 pub mod client;
 mod error;
 pub mod utils;
 pub mod config;
 mod models;
-mod client_controller;
+pub mod client_admin_impl;
+pub mod client_ctrl_impl;
 
 /// Common models are exposed
 pub use models::common;
-use crate::client_controller::{api_admin_check_version, api_ctrl_schema};
+use crate::client_admin_impl::{api_admin_check_version};
+use crate::client_ctrl_impl::api_ctrl_schema;
+use crate::models::ctrl_api_responses::CtrlHealthCheckResponse;
 
 /// Get configuration based on the environment variables (default config override)
 /// Function will panic when the environment variables are not set
@@ -27,7 +29,7 @@ use crate::client_controller::{api_admin_check_version, api_ctrl_schema};
 ///| APISIX_URL                                | The Apisix gateway url for operational traffic                                 | N - default () |
 ///| APISIX_ADMIN_URL                          | The Apisix admin api url                                                       | N - default () |
 ///| APISIX_CONTROL_URL                        | The Apisix control api url                                                     | N - default () |
-///| APISIX_ADMIN_PATH                         | The Apisix context path for admin use cases                                    | N - default () |
+///| APISIX_ADMIN_API_KEY                      | The Apisix admin api key                                                       | N - default () |
 pub async fn get_config_from_env() -> ApisixConfig {
     ApisixConfig::from_env()
 }
@@ -39,14 +41,18 @@ pub async fn get_config_default() -> ApisixConfig {
 }
 
 /// Check if the Admin API is up and running
-pub async fn admin_check(cfg: ApisixConfig) -> Result<()> {
-    api_admin_check_version(&cfg).await
+pub async fn admin_check(cfg: &ApisixConfig) -> Result<()> {
+    api_admin_check_version(cfg).await
 }
 
-/// Get the Apisix controller schema
-/// The returned value is an untyped JSON object
-pub async  fn ctrl_schema(cfg: ApisixConfig) -> Result<Value> {
-    api_ctrl_schema(&cfg).await
+/// Returns the JSON schema used by the APISIX instance (untyped JSON)
+pub async  fn ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {
+    api_ctrl_schema(cfg).await
+}
+
+/// Returns a health check of the APISIX instance
+pub async fn ctrl_health_check(cfg: &ApisixConfig) -> Result<CtrlHealthCheckResponse> {
+    client_ctrl_impl::api_ctrl_health_check(cfg).await
 }
 
 

@@ -13,12 +13,11 @@ use crate::models::requests::{AuthenticationSessionRequest, CertificateRequest, 
 use crate::models::responses::{AuthenticationSessionResponse, CertificateChoiceResponse, SignatureSessionResponse};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError;
-
+use crate::models::ctrl_api_responses::CtrlHealthCheckResponse;
 // region: Path definitions
 
-fn get_schema() -> String {
-    format!("{}", "/v1/schema")
-}
+fn get_schema() -> String { format!("{}", "/v1/schema") }
+fn get_health_check() -> String { format!("{}", "/v1/healthcheck") }
 // endregion: Path definitions
 
 #[derive(Debug)]
@@ -49,5 +48,12 @@ impl ControllerConnector {
         let path = format!("{}{}", self.cfg.control_url, get_schema());
         debug!("controller_api::schema: {}", path);
         get::<Value>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
+    #[instrument]
+    pub async fn health_check(&self) -> Result<CtrlHealthCheckResponse> {
+        let path = format!("{}{}", self.cfg.control_url, get_health_check());
+        debug!("controller_api::health_check: {}", path);
+        get::<CtrlHealthCheckResponse>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
     }
 }

@@ -11,8 +11,3 @@ pub async fn api_admin_check_version(cfg: &ApisixConfig) -> Result<()> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
     ac.check_version().await
 }
-
-pub async fn api_ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {
-    let cc: ControllerConnector =  ControllerConnector::new(cfg).await;
-    cc.schema().await
-}
