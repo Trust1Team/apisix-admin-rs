@@ -1,13 +1,13 @@
 [package]
 name = "apisix-admin-rs"
-version = "0.0.1"
+version = "0.0.0"
 description = "Apisix Admin Client"
 homepage = "https://apisix.apache.org/"
 authors = ["Michallis Pashidis <michallis@trust1team.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/Trust1Team/apisix-admin-rs"
 edition = "2021"
-keywords = ["apisix", "gateway", "api"]
+keywords = ["apisix", "gateway", "api", "microservice"]
 categories = ["api-bindings"]
 readme = "README.MD"
 
