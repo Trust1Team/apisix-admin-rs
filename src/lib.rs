@@ -6,11 +6,12 @@
 
 use anyhow::Result;
 use serde_json::Value;
+mod models;
 use crate::config::ApisixConfig;
 pub mod client;
 mod error;
 pub mod config;
-mod models;
+pub use models::*;
 pub mod client_admin_impl;
 pub mod client_ctrl_impl;
 
@@ -48,6 +49,16 @@ pub async fn admin_check(cfg: &ApisixConfig) -> Result<()> {
 /// Fetch a list of all configured Upstreams
 pub async fn admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<Upstream>>> {
     api_admin_get_upstreams(cfg).await
+}
+
+/// Fetches specified Upstream by id
+pub async fn admin_get_upstream(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<Upstream>> {
+    client_admin_impl::api_admin_get_upstream(cfg, id).await
+}
+
+/// Creates a Route with the specified id
+pub async fn admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+    client_admin_impl::api_admin_create_upstream_with_id(cfg, id, req).await
 }
 
 /// Returns the JSON schema used by the APISIX instance (untyped JSON)

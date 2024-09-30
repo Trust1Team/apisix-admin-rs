@@ -1,5 +1,5 @@
 [env]
-RUST_LOG = "info"
+RUST_LOG = "debug,reqwest=debug"
 
 APISIX_URL = "http://localhost:9080"
 APISIX_ADMIN_URL = "http://localhost:9180"

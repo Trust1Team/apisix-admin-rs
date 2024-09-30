@@ -40,9 +40,11 @@ reqwest = {  version = "0.12.4", features = [
     "rustls-tls",
 ] }
 thiserror = "1.0.59"
-#x509-parser = "0.16.0"
-#base64 = "0.22.0"
 serde_with = "3.8.0"
+validator = "0.18.1"
+rand = "0.9.0-alpha.2"
+strum_macros = "0.26.4"
+strum = "0.26.3"
 
 [dev-dependencies]
 serial_test = { version = "3.1.0", features = ["async"] }
