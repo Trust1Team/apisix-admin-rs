@@ -153,6 +153,38 @@ where
     }
 }
 
+/// Generic POST request
+/// Connection pooling is provided in `reqwest`
+pub async fn post_empty_body(
+    url: &str,
+    apikey: &str,
+    timeout_millis: u64,
+) -> Result<()>
+{
+    let client = reqwest::Client::builder()
+        .danger_accept_invalid_certs(true)
+        .timeout(Duration::from_millis(timeout_millis))
+        .build()
+        .unwrap();
+    let send_response = client
+        .post(url)
+        .header(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_DEFAULT)
+        .header(HEADER_API_KEY, apikey)
+        .header(HEADER_USER_AGENT, format!("apisix-admin-client/{:?}/rust/{:?}",HEADER_USER_AGENT_VERSION, HEADER_USER_AGENT_RUST_VERSION))
+        .send()
+        .await?;
+    let status = send_response.status().as_u16();
+    match status {
+        200..=299 => Ok(()),
+        _ => {
+            let response = send_response.bytes().await?;
+            let text = String::from_utf8(response.to_vec()).unwrap();
+            debug!("{:?}", text);
+            bail!(text)
+        }
+    }
+}
+
 // Generic POST request
 /// Connection pooling is provided in `reqwest`
 pub async fn post_json_value<T>(

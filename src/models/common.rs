@@ -1,6 +1,4 @@
 use serde::{Deserialize, Serialize};
-use x509_parser::prelude::{FromDer};
-use base64::{Engine as _};
 use anyhow::Result;
 use crate::models::requests::InteractionFlow;
 

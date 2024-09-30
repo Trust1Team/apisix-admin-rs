@@ -9,7 +9,6 @@ use serde_json::Value;
 use crate::config::ApisixConfig;
 pub mod client;
 mod error;
-pub mod utils;
 pub mod config;
 mod models;
 pub mod client_admin_impl;
@@ -17,8 +16,9 @@ pub mod client_ctrl_impl;
 
 /// Common models are exposed
 pub use models::common;
-use crate::client_admin_impl::{api_admin_check_version};
+use crate::client_admin_impl::{api_admin_check_version, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
+use crate::models::admin_api_responses::{ListResponse, TypedItem, Upstream};
 use crate::models::ctrl_api_responses::CtrlHealthCheckResponse;
 
 /// Get configuration based on the environment variables (default config override)
@@ -45,6 +45,11 @@ pub async fn admin_check(cfg: &ApisixConfig) -> Result<()> {
     api_admin_check_version(cfg).await
 }
 
+/// Fetch a list of all configured Upstreams
+pub async fn admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<Upstream>>> {
+    api_admin_get_upstreams(cfg).await
+}
+
 /// Returns the JSON schema used by the APISIX instance (untyped JSON)
 pub async  fn ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {
     api_ctrl_schema(cfg).await
@@ -55,5 +60,11 @@ pub async fn ctrl_health_check(cfg: &ApisixConfig) -> Result<CtrlHealthCheckResp
     client_ctrl_impl::api_ctrl_health_check(cfg).await
 }
 
+/// Triggers a full garbage collection in the HTTP subsystem.
+/// Note: When stream proxy is enabled, APISIX runs another Lua VM for the stream subsystem.
+/// Full garbage collection is not triggered in this VM.
+pub async fn ctrl_garbage_collect(cfg: &ApisixConfig) -> Result<()> {
+    client_ctrl_impl::api_ctrl_garbage_collect(cfg).await
+}
 
 

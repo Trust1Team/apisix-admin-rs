@@ -1,13 +1,17 @@
 use tracing::instrument;
 use anyhow::Result;
-use serde_json::Value;
-use crate::client::admin_api_client::AdminConnector;
-use crate::client::control_api_client::ControllerConnector;
+use crate::client::AdminConnector;
 use crate::config::ApisixConfig;
+use crate::models::admin_api_responses::{ListResponse, TypedItem, Upstream};
 
-/// Check if Admin API is up and running
 #[instrument(skip_all)]
 pub async fn api_admin_check_version(cfg: &ApisixConfig) -> Result<()> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
     ac.check_version().await
+}
+
+#[instrument(skip_all)]
+pub async fn api_admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<Upstream>>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_upstreams().await
 }

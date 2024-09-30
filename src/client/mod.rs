@@ -1,4 +1,6 @@
-mod reqwest_generic;
-pub mod admin_api_client;
+pub (super) mod reqwest_generic;
+pub (crate) mod admin;
+pub (crate) mod control;
 
-pub mod control_api_client;
+pub (crate) use admin::*;
+pub (crate) use control::*;

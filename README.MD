@@ -86,4 +86,7 @@ The required environment variables used:
 | ENABLE_POLLING_BY_LIB                     | Enable automatic polling (when `false` - polling MUST be implemented by callee |                |
 
 
+## TODO
+- [ ] Implement all the Apisix Admin API endpoints
+- [ ] Response object mapping to Rust Structs (mostly returned as JSON)
 

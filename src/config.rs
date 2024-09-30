@@ -39,7 +39,7 @@ impl From<ApisixConfig> for ApisixConfigBuilder {
 // region: Config Builder
 /// Apisix Configuration Builder
 ///
-/// Use this builder to create a Apisix Admin Configuration using a building pattern
+/// Use this builder to create an Apisix Admin Configuration using a building pattern
 /// # Example
 /// ```
 /// # use anyhow::Result;
@@ -50,11 +50,11 @@ impl From<ApisixConfig> for ApisixConfigBuilder {
 /// ```
 #[derive(Debug, Clone)]
 pub struct ApisixConfigBuilder {
-    pub url: Option<String>,
-    pub admin_url: Option<String>,
-    pub control_url: Option<String>,
-    pub admin_apikey: Option<String>,
-    pub client_request_timeout: Option<u64>,
+    url: Option<String>,
+    admin_url: Option<String>,
+    control_url: Option<String>,
+    admin_apikey: Option<String>,
+    client_request_timeout: Option<u64>,
 }
 
 impl ApisixConfigBuilder {

@@ -1,8 +1,7 @@
 use tracing::{error, info, warn, instrument, debug};
 use anyhow::Result;
-use base64::Engine;
-use apisix_admin_client::admin_check;
-use apisix_admin_client::config::ApisixConfigBuilder;
+use apisix_admin_client::{admin_check, admin_get_upstreams};
+use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 
 #[tokio::main]
 #[instrument]
@@ -27,11 +26,25 @@ async fn admin_ucs() -> Result<()> {
     debug!("Apisix Config: {:?}", cfg);
 
     /// Check if Admin API is up and running
-    match admin_check(cfg).await {
-        Ok(_) => info!("Admin API is up and running"),
+    match admin_check(&cfg).await {
+        Ok(_) => info!("OK::Admin API is up and running"),
         Err(e) => error!("Error checking Admin API: {:?}", e)
     }
 
+    /// Upstream Use Cases
+    upstream_use_cases(&cfg).await;
+
     info!("===Example::Apisix Admin Client END===");
     Ok(())
+}
+
+async fn upstream_use_cases(cfg: &ApisixConfig) {
+    /// Get Upstreams
+    match admin_get_upstreams(cfg).await {
+        Ok(upstreams) => {
+            debug!("Upstreams: {:?}", upstreams);
+            info!("OK::Upstream API get upstreams")
+        },
+        Err(e) => error!("Error getting upstreams: {:?}", e)
+    }
 }

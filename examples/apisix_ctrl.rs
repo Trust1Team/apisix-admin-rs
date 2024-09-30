@@ -1,7 +1,6 @@
 use tracing::{error, info, warn, instrument, debug};
 use anyhow::Result;
-use base64::Engine;
-use apisix_admin_client::{ctrl_health_check, ctrl_schema};
+use apisix_admin_client::{ctrl_garbage_collect, ctrl_health_check, ctrl_schema};
 use apisix_admin_client::config::ApisixConfigBuilder;
 
 #[tokio::main]
@@ -28,14 +27,23 @@ async fn ctrl_ucs() -> Result<()> {
 
     // Check Apisix schema - not diplayed
     match ctrl_schema(&cfg).await {
-        Ok(_) => info!("Schema: OK"),
+        Ok(_) => info!("OK::Schema"),
         Err(e) => error!("Error checking schema: {:?}", e)
     }
 
     // Check if Control API is up and running
     match ctrl_health_check(&cfg).await {
-        Ok(hc) => info!("Control API is up and running: {:?}", hc),
+        Ok(hc) => {
+            debug!("Health Check: {:?}", hc);
+            info!("OK::Control API is up and running")
+        },
         Err(e) => error!("Error checking Control API: {:?}", e)
+    }
+
+    // Trigger garbage collection
+    match ctrl_garbage_collect(&cfg).await {
+        Ok(_) => info!("OK::Garbage collection triggered"),
+        Err(e) => error!("Error triggering garbage collection: {:?}", e)
     }
 
     info!("===Example::Apisix Controller Client END===");
