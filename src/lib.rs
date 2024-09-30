@@ -61,6 +61,16 @@ pub async fn admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &U
     client_admin_impl::api_admin_create_upstream_with_id(cfg, id, req).await
 }
 
+/// Creates an Upstream and assigns a random id
+pub async fn admin_create_upstream(cfg: &ApisixConfig, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+    client_admin_impl::api_admin_create_upstream(cfg, req).await
+}
+
+/// Removes the Upstream with the specified id
+pub async fn admin_delete_upstream(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    client_admin_impl::api_admin_delete_upstream(cfg, id).await
+}
+
 /// Returns the JSON schema used by the APISIX instance (untyped JSON)
 pub async  fn ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {
     api_ctrl_schema(cfg).await

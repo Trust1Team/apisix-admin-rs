@@ -29,3 +29,15 @@ pub async fn api_admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
     ac.create_upstream_with_id(id, req).await
 }
+
+#[instrument(skip_all)]
+pub async fn api_admin_create_upstream(cfg: &ApisixConfig, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.create_upstream(req).await
+}
+
+#[instrument(skip_all)]
+pub async fn api_admin_delete_upstream(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.delete_upstream(id).await
+}

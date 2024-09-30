@@ -1,7 +1,7 @@
 use tracing::{error, info, warn, instrument, debug};
 use anyhow::Result;
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_upstream_with_id, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamTimeout, UpstreamType};
+use apisix_admin_client::{admin_check, admin_create_upstream, admin_create_upstream_with_id, admin_delete_upstream, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamTimeout, UpstreamType};
 use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 
 #[tokio::main]
@@ -33,13 +33,19 @@ async fn admin_ucs() -> Result<()> {
     }
 
     // Upstream Use Cases
-    upstream_use_cases(&cfg).await;
+    let upstream_id = upstream_use_cases(&cfg).await?;
+
+    // Delete Upstream
+    match admin_delete_upstream(&cfg, &upstream_id).await {
+        Ok(_) => info!("OK::Upstream API delete upstream by id"),
+        Err(e) => error!("Error deleting upstream: {:?}", e)
+    }
 
     info!("===Example::Apisix Admin Client END===");
     Ok(())
 }
 
-async fn upstream_use_cases(cfg: &ApisixConfig) {
+async fn upstream_use_cases(cfg: &ApisixConfig) -> Result<String> {
     // Get Upstreams
     match admin_get_upstreams(cfg).await {
         Ok(upstreams) => {
@@ -57,7 +63,44 @@ async fn upstream_use_cases(cfg: &ApisixConfig) {
         Err(e) => error!("Error getting upstream by id: {:?}", e)
     }
 
+    upstream_use_cases_create_upstream(cfg).await
+}
 
+async fn upstream_use_cases_create_upstream(cfg: &ApisixConfig) -> Result<String> {
+    // Create Upstream with custom id
+    let nodes = r#"
+        {
+            "localhost:9000": 1
+        }"#;
+    let node_defs: Value = serde_json::from_str(nodes).unwrap();
+
+    let upstream_req = UpstreamBuilder::new()
+        .name("Test Upstream".to_string())
+        .desc("Test Upstream Description".to_string())
+        .schema(UpstreamSchema::https)
+        .u_type(UpstreamType::roundrobin)
+        .nodes(node_defs)
+        .retries(3)
+        .retry_timeout(5)
+        .timeout(UpstreamTimeout { connect: 0.5, send: 0.5, read: 0.5 })
+        .build()?;
+
+    info!("==> Creating Upstream with custom id: {:?}", serde_json::to_string(&upstream_req));
+
+    match admin_create_upstream(cfg, &upstream_req).await {
+        Ok(res) => {
+            debug!("Upstream response: {:?}", res);
+            info!("OK::Upstream API create upstream by id");
+            Ok(res.value.unwrap().id.unwrap())
+        },
+        Err(e) => {
+            error!("Error creating upstream by id: {:?}", e);
+            Err(e)
+        }
+    }
+}
+
+async fn upstream_use_cases_create_upstream_with_id(cfg: &ApisixConfig) -> Result<String> {
     // Create Upstream with custom id
     let nodes = r#"
         {
@@ -86,4 +129,6 @@ async fn upstream_use_cases(cfg: &ApisixConfig) {
         },
         Err(e) => error!("Error creating upstream by id: {:?}", e)
     }
+
+    Ok(String::from("test_upstream"))
 }

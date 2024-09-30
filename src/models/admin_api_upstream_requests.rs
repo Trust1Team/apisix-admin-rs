@@ -161,7 +161,7 @@ impl Default for UpstreamRequest {
         }"#;
         let nodes = serde_json::from_str(nodes).unwrap();
         UpstreamRequest {
-            id: Some(generate_identifier()),
+            id: None, //Some(generate_identifier())
             retries: Some(0_i32), //disabled by default
             retry_timeout: Some(0_i32),
             timeout: None,

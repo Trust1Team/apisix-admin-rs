@@ -7,7 +7,7 @@ use anyhow::Result;
 use serde_json::Value;
 use tracing::{debug, info, instrument};
 use crate::client::admin::{path_check_version, path_upstream_with_id, path_upstreams, ADMIN_PATH};
-use crate::client::reqwest_generic::{get, head, post, put};
+use crate::client::reqwest_generic::{delete, get, head, post, put};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError;
 use crate::models::admin_api_responses::{GenericJsonResponse, ListResponse, TypedItem, Upstream};
@@ -62,6 +62,19 @@ impl AdminConnector {
         debug!("admin_api::create_upstream_with_id: {}", path);
         put::<UpstreamRequest, TypedItem<Upstream>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
     }
+
+    pub async fn create_upstream(&self, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_upstreams());
+        debug!("admin_api::create_upstream: {}", path);
+        post::<UpstreamRequest, TypedItem<Upstream>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
+    }
+
+    pub async fn delete_upstream(&self, id: &str) -> Result<()> {
+        let path = format!("{}{}", self.cfg.admin_url, path_upstream_with_id(id));
+        debug!("admin_api::delete_upstream: {}", path);
+        delete(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
     // endregion: upstream api
 
     // create service
