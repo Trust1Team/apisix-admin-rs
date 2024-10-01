@@ -4,6 +4,7 @@ use serde_json::Value;
 use strum_macros::{Display, EnumString};
 use crate::models::generate_identifier;
 use crate::{Result};
+use crate::common::ApisixTimeout;
 
 #[serde_with::skip_serializing_none]
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -11,7 +12,7 @@ pub struct UpstreamBuilder {
     pub id: Option<String>,
     pub retries: Option<i32>,
     pub retry_timeout: Option<i32>,
-    pub timeout: Option<UpstreamTimeout>,
+    pub timeout: Option<ApisixTimeout>,
     pub nodes: Option<Value>,
     pub service_name: Option<String>,
     pub discovery_type: Option<String>,
@@ -91,7 +92,7 @@ impl UpstreamBuilder {
     /// and sending and receiving messages to and from the Upstream.
     ///
     /// Example: {"connect": 0.5,"send": 0.5,"read": 0.5}
-    pub fn timeout(mut self, timeout: UpstreamTimeout) -> Self {
+    pub fn timeout(mut self, timeout: ApisixTimeout) -> Self {
         self.timeout = Some(timeout);
         self
     }
@@ -142,7 +143,7 @@ pub struct UpstreamRequest {
     pub id: Option<String>,
     pub retries: Option<i32>,
     pub retry_timeout: Option<i32>,
-    pub timeout: Option<UpstreamTimeout>,
+    pub timeout: Option<ApisixTimeout>,
     pub nodes: Option<Value>,
     pub service_name: Option<String>,
     pub discovery_type: Option<String>,
@@ -192,14 +193,6 @@ impl From<UpstreamRequest> for UpstreamBuilder {
             scheme: upstream.scheme,
         }
     }
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct UpstreamTimeout {
-    pub connect: f32,
-    pub send: f32,
-    pub read: f32,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Display, EnumString)]
@@ -277,7 +270,7 @@ mod tests {
             .nodes(nodes)
             .retries(3)
             .retry_timeout(5)
-            .timeout(UpstreamTimeout { connect: 0.5, send: 0.5, read: 0.5 })
+            .timeout(ApisixTimeout { connect: Some(0.5), send: Some(0.5), read: Some(0.5) })
             .build().unwrap();
         info!("Upstream Request: {:?}", to_string(&upstream_req));
         assert!(true)

@@ -7,11 +7,12 @@ use anyhow::Result;
 use reqwest::Response;
 use serde_json::Value;
 use tracing::{debug, info, instrument};
+use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
 use crate::client::admin::{path_check_version, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
-use crate::common_responses::{ListResponse, TypedItem};
+use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError;
 use crate::models::admin_upstream_responses::ApisixUpstream;
@@ -108,11 +109,14 @@ impl AdminConnector {
     }
     // endregion: service api
 
-    // create route
-
-    // create consumer
-
-    // create plugin
+    // region: route api
+    #[instrument(skip(self))]
+    pub async fn get_routes(&self) -> Result<ListResponse<TypedItem<ApisixRoute>>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_services());
+        debug!("admin_api::get_routes: {}", path);
+        get::<ListResponse<TypedItem<ApisixRoute>>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+    // endregion: route api
 
 
 }

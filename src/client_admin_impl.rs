@@ -1,8 +1,9 @@
 use tracing::instrument;
+use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
 use crate::client::AdminConnector;
-use crate::common_responses::{ListResponse, TypedItem};
+use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError::InvalidRequest;
 use crate::models::admin_upstream_responses::ApisixUpstream;
@@ -67,3 +68,8 @@ pub async fn api_admin_delete_service(cfg: &ApisixConfig, id: &str) -> Result<()
     ac.delete_service(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
 }
 // endregion: service
+#[instrument(skip_all)]
+pub async fn api_admin_get_routes(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixRoute>>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_routes().await.map_err(|e| InvalidRequest(e.to_string()))
+}

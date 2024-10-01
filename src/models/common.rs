@@ -25,3 +25,11 @@ pub struct TypedItem<T> {
     pub value: Option<T>,
     pub modified_index: Option<i64>,
 }
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ApisixTimeout {
+    pub connect: Option<f32>,
+    pub send: Option<f32>,
+    pub read: Option<f32>,
+}

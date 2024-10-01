@@ -42,7 +42,8 @@ impl From<ApisixConfig> for ApisixConfigBuilder {
 /// Use this builder to create an Apisix Admin Configuration using a building pattern
 /// # Example
 /// ```
-/// # use anyhow::Result;
+/// # use apisix_admin_client::error::ApisixClientError;
+/// # type Result<T> = std::result::Result<T, ApisixClientError>;
 /// # use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 /// let cfg: Result<ApisixConfig> = ApisixConfigBuilder::new()
 ///     .url("http://localhost:9080") // DEV environment

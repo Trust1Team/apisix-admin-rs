@@ -1,10 +1,12 @@
-pub mod common_responses;
+pub mod common;
 pub mod ctrl_responses;
 pub mod admin_upstream_responses;
 pub mod admin_upstream_requests;
 pub mod admin_service_requests;
 pub mod admin_service_responses;
 pub mod plugins;
+pub mod admin_route_requests;
+pub mod admin_route_responses;
 
 pub use admin_upstream_requests::*;
 

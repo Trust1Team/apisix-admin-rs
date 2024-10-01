@@ -2,8 +2,9 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_service, admin_delete_upstream, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamTimeout, UpstreamType};
+use apisix_admin_client::{admin_check, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_service, admin_delete_upstream, admin_get_routes, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType};
 use apisix_admin_client::admin_service_requests::{ServiceBuilder, ServiceRequest};
+use apisix_admin_client::common::ApisixTimeout;
 use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 use apisix_admin_client::error::ApisixClientError;
 use apisix_admin_client::plugins::{Plugin, Plugins};
@@ -46,6 +47,9 @@ async fn admin_ucs() -> Result<()> {
     let _ = admin_get_services(&cfg).await.map(|_| info!("OK::admin_get_services"))?;
     let _ = use_case_create_service_with_id(&cfg, service_id, upstream_id.to_string()).await?;
 
+    // Routes
+    let route_id = "test_route";
+    let _ = admin_get_routes(&cfg).await.map(|_| info!("OK::admin_get_routes"))?;
 
     // Clean up
     let _ = admin_delete_service(&cfg, &service_id).await.map(|_| info!("OK::service_delete"))?;
@@ -103,7 +107,7 @@ async fn use_cases_create_upstream_with_id(cfg: &ApisixConfig, id: impl Into<Str
         .nodes(node_defs)
         .retries(3)
         .retry_timeout(5)
-        .timeout(UpstreamTimeout { connect: 0.5, send: 0.5, read: 0.5 })
+        .timeout(ApisixTimeout { connect: Some(0.5), send: Some(0.5), read: Some(0.5) })
         .build()?;
 
     debug!("==> Creating Upstream with custom id: {:?}", serde_json::to_string(&upstream_req));

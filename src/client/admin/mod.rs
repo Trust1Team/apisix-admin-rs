@@ -14,6 +14,9 @@ fn path_upstreams_with_id_and_path(id: &str, path: &str) -> String { format!("{}
 fn path_services() -> String { format!("{}/services", ADMIN_PATH) }
 fn path_service_with_id(id: &str) -> String { format!("{}/services/{}", ADMIN_PATH, id) }
 fn path_services_with_id_and_path(id: &str, path: &str) -> String { format!("{}/services/{}/{}", ADMIN_PATH, id, path) }
+fn path_routes() -> String { format!("{}/routes", ADMIN_PATH) }
+fn path_route_with_id(id: &str) -> String { format!("{}/routes/{}", ADMIN_PATH, id) }
+fn path_routes_with_id_and_path(id: &str, path: &str) -> String { format!("{}/routes/{}/{}", ADMIN_PATH, id, path) }
 // endregion: Path definitions
 
 

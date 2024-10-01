@@ -24,7 +24,7 @@ mod tests {
     use tracing::{error, info};
     use tracing_test::traced_test;
     use crate::models::admin_upstream_requests::UpstreamType;
-    use crate::models::common_responses::TypedItem;
+    use crate::models::common::TypedItem;
 
     #[traced_test]
     #[tokio::test]

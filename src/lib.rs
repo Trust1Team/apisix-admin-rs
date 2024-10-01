@@ -11,6 +11,7 @@ pub mod client;
 pub mod error;
 pub mod config;
 pub use models::*;
+use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
 
@@ -22,7 +23,7 @@ type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 /// Common models are exposed
 use crate::client_admin_impl::{api_admin_check_version, api_admin_get_services, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
-use crate::common_responses::{ListResponse, TypedItem};
+use crate::common::{ListResponse, TypedItem};
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::ctrl_responses::CtrlHealthCheckResponse;
 
@@ -98,6 +99,12 @@ pub async fn admin_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &Se
 /// Removes the Service with the specified id
 pub async fn admin_delete_service(cfg: &ApisixConfig, id: &str) -> Result<()> {
     client_admin_impl::api_admin_delete_service(cfg, id).await
+}
+
+/// Fetches a list of all configured Routes
+pub async fn admin_get_routes(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixRoute>>>
+{
+    client_admin_impl::api_admin_get_routes(cfg).await
 }
 
 // region: controller

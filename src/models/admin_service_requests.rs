@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use crate::plugins::Plugins;
-use crate::{UpstreamRequest, UpstreamSchema, UpstreamTimeout, UpstreamType};
+use crate::UpstreamRequest;
 use crate::models::generate_identifier;
 use crate::{Result};
 
