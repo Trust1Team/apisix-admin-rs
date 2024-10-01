@@ -11,13 +11,16 @@ pub mod client;
 pub mod error;
 pub mod config;
 pub use models::*;
+use crate::admin_service_requests::ServiceRequest;
+use crate::admin_service_responses::ApisixService;
+
 pub mod client_admin_impl;
 pub mod client_ctrl_impl;
 
 type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 
 /// Common models are exposed
-use crate::client_admin_impl::{api_admin_check_version, api_admin_get_upstreams};
+use crate::client_admin_impl::{api_admin_check_version, api_admin_get_services, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
 use crate::common_responses::{ListResponse, TypedItem};
 use crate::models::admin_upstream_responses::ApisixUpstream;
@@ -77,6 +80,17 @@ pub async fn admin_delete_upstream(cfg: &ApisixConfig, id: &str) -> Result<()> {
     client_admin_impl::api_admin_delete_upstream(cfg, id).await
 }
 
+/// Fetches a list of available Services
+pub async fn admin_get_services(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixService>>> {
+    api_admin_get_services(cfg).await
+}
+
+/// Creates a Service with the specified id
+pub async fn admin_get_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
+    client_admin_impl::api_admin_create_service_with_id(cfg, id, req).await
+}
+
+// region: controller
 /// Returns the JSON schema used by the APISIX instance (untyped JSON)
 pub async  fn ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {
     api_ctrl_schema(cfg).await
@@ -93,5 +107,5 @@ pub async fn ctrl_health_check(cfg: &ApisixConfig) -> Result<CtrlHealthCheckResp
 pub async fn ctrl_garbage_collect(cfg: &ApisixConfig) -> Result<()> {
     client_ctrl_impl::api_ctrl_garbage_collect(cfg).await
 }
-
+// endregion: controller
 

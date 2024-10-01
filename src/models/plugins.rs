@@ -1,9 +1,17 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Plugins {
     #[serde(rename = "key-auth")]
     pub key_auth: Option<KeyAuth>,
+}
+
+impl Default for Plugins {
+    fn default() -> Self {
+        Plugins {
+            key_auth: None,
+        }
+    }
 }
 
 pub trait Plugin {}

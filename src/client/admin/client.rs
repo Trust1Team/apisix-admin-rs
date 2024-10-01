@@ -7,8 +7,9 @@ use anyhow::Result;
 use reqwest::Response;
 use serde_json::Value;
 use tracing::{debug, info, instrument};
+use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
-use crate::client::admin::{path_check_version, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
+use crate::client::admin::{path_check_version, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
 use crate::common_responses::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
@@ -83,6 +84,13 @@ impl AdminConnector {
         let path = format!("{}{}", self.cfg.admin_url, path_services());
         debug!("admin_api::get_services: {}", path);
         get::<ListResponse<TypedItem<ApisixService>>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
+    pub async fn create_service_with_id(&self, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_service_with_id(id));
+        debug!("admin_api::create_service_with_id: {}", path);
+        put::<ServiceRequest, TypedItem<ApisixService>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
     }
     // endregion: service api
 

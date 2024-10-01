@@ -1,4 +1,6 @@
 use tracing::instrument;
+use crate::admin_service_requests::ServiceRequest;
+use crate::admin_service_responses::ApisixService;
 use crate::client::AdminConnector;
 use crate::common_responses::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
@@ -14,6 +16,7 @@ pub async fn api_admin_check_version(cfg: &ApisixConfig) -> Result<()> {
     ac.check_version().await.map_err(|e| InvalidRequest(e.to_string()))
 }
 
+// region: upstream
 #[instrument(skip_all)]
 pub async fn api_admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixUpstream>>> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
@@ -37,3 +40,18 @@ pub async fn api_admin_delete_upstream(cfg: &ApisixConfig, id: &str) -> Result<(
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
     ac.delete_upstream(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
 }
+// endregion: upstream
+
+// region: service
+#[instrument(skip_all)]
+pub async fn api_admin_get_services(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixService>>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_services().await.map_err(|e| InvalidRequest(e.to_string()))
+}
+
+#[instrument(skip_all)]
+pub async fn api_admin_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.create_service_with_id(id, req).await.map_err(|e| InvalidRequest(e.to_string()))
+}
+// endregion: service
