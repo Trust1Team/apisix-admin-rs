@@ -1,12 +1,12 @@
-pub mod ctrl_api_responses;
-pub mod admin_api_responses;
-mod admin_api_upstream_requests;
-mod admin_api_service_requests;
-mod plugins;
+pub mod common_responses;
+pub mod ctrl_responses;
+pub mod admin_upstream_responses;
+pub mod admin_upstream_requests;
+pub mod admin_service_requests;
+pub mod admin_service_responses;
+pub mod plugins;
 
-use std::fmt;
-use std::num::NonZeroU32;
-pub use admin_api_upstream_requests::*;
+pub use admin_upstream_requests::*;
 
 use rand::distr::Alphanumeric;
 use serde::{Deserialize, Deserializer, Serialize};
@@ -30,7 +30,7 @@ mod tests {
     use super::*;
     use tracing::{error, info};
     use tracing_test::traced_test;
-    use crate::models::admin_api_upstream_requests::UpstreamType;
+    use crate::models::admin_upstream_requests::UpstreamType;
 
     #[traced_test]
     #[tokio::test]

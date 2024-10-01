@@ -9,7 +9,7 @@ use tracing::{debug, info, instrument};
 use crate::client::reqwest_generic::{get, head, post, post_empty_body};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError;
-use crate::models::ctrl_api_responses::CtrlHealthCheckResponse;
+use crate::models::ctrl_responses::CtrlHealthCheckResponse;
 // region: Path definitions
 
 fn get_schema() -> String { format!("{}", "/v1/schema") }

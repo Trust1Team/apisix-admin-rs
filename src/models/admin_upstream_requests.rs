@@ -257,7 +257,7 @@ mod tests {
     use super::*;
     use tracing::{error, info};
     use tracing_test::traced_test;
-    use crate::models::admin_api_upstream_requests::UpstreamType;
+    use crate::models::admin_upstream_requests::UpstreamType;
 
     #[traced_test]
     #[tokio::test]

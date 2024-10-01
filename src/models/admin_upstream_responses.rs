@@ -1,32 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use crate::models::plugins::Plugins;
-use crate::{UpstreamBuilder, UpstreamSchema, UpstreamTimeout};
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ListResponse<T> {
-    #[serde(rename = "list")]
-    pub list: Vec<T>,
-    pub total: i32,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct GenericJsonResponse {
-    pub created_index: i64,
-    pub key: String,
-    pub value: Value,
-    pub modified_index: i64,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TypedItem<T> {
-    pub created_index: Option<i64>,
-    pub key: Option<String>,
-    pub value: Option<T>,
-    pub modified_index: Option<i64>,
-}
 
 #[serde_with::skip_serializing_none]
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
@@ -35,23 +9,11 @@ pub struct ApisixUpstream {
     pub type_field: Option<String>,
     pub desc: Option<String>,
     pub scheme: Option<String>,
-    pub update_time: Option<i64>,
     pub nodes: Option<Value>, //untyped
     pub create_time: Option<i64>,
+    pub update_time: Option<i64>,
     pub name: Option<String>,
     pub id: Option<Value>, //can be both string or integer
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ApisixService {
-    pub update_time: Option<i64>,
-    pub create_time: Option<i64>,
-    pub plugins: Plugins,
-    pub id: Option<String>,
-    pub upstream_id: Option<String>,
-    pub name: Option<String>,
-    pub desc: Option<String>,
-    pub enable_websocket: Option<bool>,
 }
 
 // region: tests
@@ -61,7 +23,8 @@ mod tests {
     use super::*;
     use tracing::{error, info};
     use tracing_test::traced_test;
-    use crate::models::admin_api_upstream_requests::UpstreamType;
+    use crate::models::admin_upstream_requests::UpstreamType;
+    use crate::models::common_responses::TypedItem;
 
     #[traced_test]
     #[tokio::test]
@@ -92,9 +55,14 @@ mod tests {
             }
         }"#;
         let nodes: TypedItem<ApisixUpstream> = serde_json::from_str(nodes).unwrap();
-
-        info!("Upstream response: {:?}", to_string(&nodes));
-        assert!(true)
+        assert_eq!(nodes.key.unwrap(), "/apisix/upstreams/gen-5NzR8BYUwwQX");
+        assert_eq!(nodes.value.clone().unwrap().id.unwrap(), "gen-5NzR8BYUwwQX");
+        assert_eq!(nodes.value.clone().unwrap().name.unwrap(), "Test Upstream");
+        assert_eq!(nodes.value.clone().unwrap().desc.unwrap(), "Test Upstream Description");
+        assert_eq!(nodes.value.clone().unwrap().scheme.unwrap(), "http");
+        assert_eq!(nodes.value.clone().unwrap().type_field.unwrap(), "roundrobin");
+        assert_eq!(nodes.value.clone().unwrap().nodes.clone().unwrap()["localhost:9000"], 1);
+        assert_eq!(nodes.value.clone().unwrap().update_time.unwrap(), 1727703719);
     }
 }
 // endregion: tests

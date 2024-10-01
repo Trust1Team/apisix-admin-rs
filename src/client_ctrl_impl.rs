@@ -1,7 +1,7 @@
 use serde_json::Value;
 use crate::client::ControllerConnector;
 use crate::config::ApisixConfig;
-use crate::models::ctrl_api_responses::CtrlHealthCheckResponse;
+use crate::models::ctrl_responses::CtrlHealthCheckResponse;
 type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 pub async fn api_ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {
     let cc: ControllerConnector =  ControllerConnector::new(cfg).await;

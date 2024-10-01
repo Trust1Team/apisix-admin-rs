@@ -19,8 +19,9 @@ type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 /// Common models are exposed
 use crate::client_admin_impl::{api_admin_check_version, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
-use crate::models::admin_api_responses::{ListResponse, TypedItem, ApisixUpstream};
-use crate::models::ctrl_api_responses::CtrlHealthCheckResponse;
+use crate::common_responses::{ListResponse, TypedItem};
+use crate::models::admin_upstream_responses::ApisixUpstream;
+use crate::models::ctrl_responses::CtrlHealthCheckResponse;
 
 /// Get configuration based on the environment variables (default config override)
 /// Function will panic when the environment variables are not set

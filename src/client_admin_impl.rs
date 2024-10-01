@@ -1,8 +1,9 @@
 use tracing::instrument;
 use crate::client::AdminConnector;
+use crate::common_responses::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError::InvalidRequest;
-use crate::models::admin_api_responses::{ListResponse, TypedItem, ApisixUpstream};
+use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::UpstreamRequest;
 
 type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;

@@ -7,12 +7,13 @@ use anyhow::Result;
 use reqwest::Response;
 use serde_json::Value;
 use tracing::{debug, info, instrument};
-use crate::admin_api_responses::ApisixService;
+use crate::admin_service_responses::ApisixService;
 use crate::client::admin::{path_check_version, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
+use crate::common_responses::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError;
-use crate::models::admin_api_responses::{GenericJsonResponse, ListResponse, TypedItem, ApisixUpstream};
+use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::UpstreamRequest;
 
 #[derive(Debug)]

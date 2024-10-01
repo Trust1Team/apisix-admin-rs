@@ -94,5 +94,11 @@ The required environment variables used:
 - [ ] Service: patch use cases
 
 ## Remarks
+
+Read the conventions upon ID Syntax:
+
 [ID Syntax](https://apisix.apache.org/docs/apisix/admin-api/#quick-note-on-id-syntax)
+
+This library assumes that all Apisix resources are created with a unique ID. The ID is a string that is unique within the scope of the resource type. The ID is used to identify the resource in the Apisix Admin API. 
+The ID must be a string literal, integer literals are not supported yet (both are possible in Apisix).
 
