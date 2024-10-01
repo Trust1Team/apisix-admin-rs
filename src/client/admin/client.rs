@@ -87,6 +87,13 @@ impl AdminConnector {
     }
 
     #[instrument(skip(self))]
+    pub async fn get_service(&self, id: &str) -> Result<TypedItem<ApisixService>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_service_with_id(id));
+        debug!("admin_api::get_service: {}", path);
+        get::<TypedItem<ApisixService>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
     pub async fn create_service_with_id(&self, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
         let path = format!("{}{}", self.cfg.admin_url, path_service_with_id(id));
         debug!("admin_api::create_service_with_id: {}", path);

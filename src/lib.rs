@@ -85,8 +85,13 @@ pub async fn admin_get_services(cfg: &ApisixConfig) -> Result<ListResponse<Typed
     api_admin_get_services(cfg).await
 }
 
+/// Fetches specified Service by id
+pub async fn admin_get_service(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixService>> {
+    client_admin_impl::api_admin_get_service(cfg, id).await
+}
+
 /// Creates a Service with the specified id
-pub async fn admin_get_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
+pub async fn admin_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
     client_admin_impl::api_admin_create_service_with_id(cfg, id, req).await
 }
 

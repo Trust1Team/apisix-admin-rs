@@ -50,6 +50,12 @@ pub async fn api_admin_get_services(cfg: &ApisixConfig) -> Result<ListResponse<T
 }
 
 #[instrument(skip_all)]
+pub async fn api_admin_get_service(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixService>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_service(id).await.map_err(|e| InvalidRequest(e.to_string()))
+}
+
+#[instrument(skip_all)]
 pub async fn api_admin_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
     ac.create_service_with_id(id, req).await.map_err(|e| InvalidRequest(e.to_string()))

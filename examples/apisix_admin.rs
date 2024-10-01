@@ -2,9 +2,12 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_upstream_with_id, admin_delete_upstream, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamTimeout, UpstreamType};
+use apisix_admin_client::{admin_check, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_upstream, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamTimeout, UpstreamType};
+use apisix_admin_client::admin_service_requests::{ServiceBuilder, ServiceRequest};
 use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 use apisix_admin_client::error::ApisixClientError;
+use apisix_admin_client::plugins::{Plugin, Plugins};
+
 type Result<T> = std::result::Result<T, ApisixClientError>;
 
 #[tokio::main]
@@ -35,21 +38,52 @@ async fn admin_ucs() -> Result<()> {
     // Upstream
     let upstream_id = "test_upstream";
     let _ = admin_get_upstreams(&cfg).await.map(|_| info!("OK::Upstream API get upstreams"))?;
-    let _ = upstream_use_cases_create_upstream_with_id(&cfg, upstream_id).await?;
+    let _ = use_cases_create_upstream_with_id(&cfg, upstream_id).await?;
     let _ = admin_get_upstream(&cfg, upstream_id).await.map(|_| info!("OK::admin_get_upstream"))?;
-    let _ = admin_delete_upstream(&cfg, &upstream_id).await.map(|_| info!("OK::upstream_delete"))?;
 
     // Service
     let service_id = "test_service";
     let _ = admin_get_services(&cfg).await.map(|_| info!("OK::admin_get_services"))?;
+    let _ = use_case_create_service_with_id(&cfg, service_id, upstream_id.to_string()).await?;
+
+
+    // Clean up
+    //let _ = admin_delete_upstream(&cfg, &upstream_id).await.map(|_| info!("OK::upstream_delete"))?;
 
     info!("=== Example::Apisix Admin Client END ===");
     Ok(())
 }
 
 // region: helpers
+async fn use_case_create_service_with_id(cfg: &ApisixConfig, id: impl Into<String>, upstream_id: String) -> Result<String> {
+    let service_id: String = id.into();
+    let plugins: Plugins = Plugins::default();
 
-async fn upstream_use_cases_create_upstream_with_id(cfg: &ApisixConfig, id: impl Into<String>) -> Result<String> {
+    let req = ServiceBuilder::new()
+        .id(service_id.clone())
+        .name("Test Service".to_string())
+        .desc("Test Service Description".to_string())
+        .enable_websocket(false)
+        .upstream_id(upstream_id)
+        .plugins(plugins)
+        .build()?;
+
+    debug!("==> Creating Service with custom id: {:?}", serde_json::to_string(&req));
+
+    match admin_create_service_with_id(cfg, service_id.as_str(), &req).await {
+        Ok(res) => {
+            debug!("Service response: {:?}", res);
+            info!(r#"OK::Service API create service by id: {:?}"#, "test_service");
+            Ok(String::from("test_service"))
+        },
+        Err(e) => {
+            error!("Error creating service by id: {:?}", e);
+            Err(e)
+        }
+    }
+}
+
+async fn use_cases_create_upstream_with_id(cfg: &ApisixConfig, id: impl Into<String>) -> Result<String> {
     let upstream_id: String = id.into();
     // Create Upstream with custom id
     let nodes = r#"
@@ -68,7 +102,7 @@ async fn upstream_use_cases_create_upstream_with_id(cfg: &ApisixConfig, id: impl
         .retries(3)
         .retry_timeout(5)
         .timeout(UpstreamTimeout { connect: 0.5, send: 0.5, read: 0.5 })
-        .build().unwrap();
+        .build()?;
 
     debug!("==> Creating Upstream with custom id: {:?}", serde_json::to_string(&upstream_req));
 
