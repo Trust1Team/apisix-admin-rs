@@ -12,7 +12,7 @@ pub struct ApisixRoute {
     pub desc: Option<String>,
     pub status: Option<i64>,
     pub update_time: Option<i64>,
-    pub plugins: Plugins,
+    pub plugins: Option<Plugins>,
     pub uri: Option<String>,
     pub uris: Option<Vec<String>>,
     pub hosts: Option<Vec<String>>,
@@ -58,6 +58,7 @@ mod tests {
                 },
                 "uri": "/auth/v1/*",
                 "upstream_id": "test_upstream",
+                "service_id": "test_service",
                 "create_time": 1727776498,
                 "priority": 0,
                 "id": "route-t1c-authentication-api"

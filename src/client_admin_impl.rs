@@ -1,4 +1,5 @@
 use tracing::instrument;
+use crate::admin_route_requests::RouteRequest;
 use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
@@ -68,8 +69,29 @@ pub async fn api_admin_delete_service(cfg: &ApisixConfig, id: &str) -> Result<()
     ac.delete_service(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
 }
 // endregion: service
+
+// region: route
 #[instrument(skip_all)]
 pub async fn api_admin_get_routes(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixRoute>>> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
     ac.get_routes().await.map_err(|e| InvalidRequest(e.to_string()))
 }
+
+#[instrument(skip_all)]
+pub async fn api_admin_get_route(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixRoute>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_route(id).await.map_err(|e| InvalidRequest(e.to_string()))
+}
+
+#[instrument(skip_all)]
+pub async fn api_admin_create_route_with_id(cfg: &ApisixConfig, id: &str, req: &RouteRequest) -> Result<TypedItem<ApisixRoute>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.create_route_with_id(id, req).await.map_err(|e| InvalidRequest(e.to_string()))
+}
+
+#[instrument(skip_all)]
+pub async fn api_admin_delete_route(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.delete_route(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
+}
+// endregion: route

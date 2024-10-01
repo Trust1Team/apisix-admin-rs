@@ -9,7 +9,7 @@ pub struct ApisixService {
     pub create_time: Option<i64>,
     pub plugins: Plugins,
     pub id: Option<Value>,
-    pub upstream_id: Option<String>,
+    pub upstream_id: Option<Value>,
     pub name: Option<String>,
     pub desc: Option<String>,
     pub enable_websocket: Option<bool>,

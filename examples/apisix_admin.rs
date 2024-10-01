@@ -2,7 +2,8 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_service, admin_delete_upstream, admin_get_routes, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType};
+use apisix_admin_client::{admin_check, admin_create_route_with_id, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_route, admin_delete_service, admin_delete_upstream, admin_get_routes, admin_get_service, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType};
+use apisix_admin_client::admin_route_requests::{RouteBuilder, RouteRequest};
 use apisix_admin_client::admin_service_requests::{ServiceBuilder, ServiceRequest};
 use apisix_admin_client::common::ApisixTimeout;
 use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
@@ -46,21 +47,50 @@ async fn admin_ucs() -> Result<()> {
     let service_id = "test_service";
     let _ = admin_get_services(&cfg).await.map(|_| info!("OK::admin_get_services"))?;
     let _ = use_case_create_service_with_id(&cfg, service_id, upstream_id.to_string()).await?;
+    let _ = admin_get_service(&cfg, service_id).await.map(|_| info!("OK::admin_get_service"))?;
 
     // Routes
     let route_id = "test_route";
     let _ = admin_get_routes(&cfg).await.map(|_| info!("OK::admin_get_routes"))?;
+    let _ = use_case_create_route_with_id(&cfg, route_id, service_id.to_string()).await?;
 
-    // Clean up
+
+    // Clean up (reverse)
+    let _ = admin_delete_route(&cfg, &route_id).await.map(|_| info!("OK::route_delete"))?;
     let _ = admin_delete_service(&cfg, &service_id).await.map(|_| info!("OK::service_delete"))?;
     let _ = admin_delete_upstream(&cfg, &upstream_id).await.map(|_| info!("OK::upstream_delete"))?;
-
 
     info!("=== Example::Apisix Admin Client END ===");
     Ok(())
 }
 
 // region: helpers
+async fn use_case_create_route_with_id(cfg: &ApisixConfig, id: impl Into<String>, service_id: String) -> Result<String> {
+    let route_id: String = id.into();
+
+    let req: RouteRequest = RouteBuilder::new()
+        .id(route_id.clone())
+        .name("Test Route".to_string())
+        .desc("Test Route Description".to_string())
+        .uri("/test".to_string())
+        .methods(vec!["GET".to_string()])
+        .service_id(service_id)
+        .build()?;
+
+    debug!("==> Creating Route with custom id: {:?}", serde_json::to_string(&req));
+
+    match admin_create_route_with_id(cfg, route_id.as_str(), &req).await {
+        Ok(res) => {
+            debug!("Route response: {:?}", res);
+            info!(r#"OK::Route API create route by id: {:?}"#, route_id);
+            Ok(route_id)
+        },
+        Err(e) => {
+            error!("Error creating route by id: {:?}", e);
+            Err(e)
+        }
+    }
+}
 async fn use_case_create_service_with_id(cfg: &ApisixConfig, id: impl Into<String>, upstream_id: String) -> Result<String> {
     let service_id: String = id.into();
     let plugins: Plugins = Plugins::default();
@@ -79,8 +109,8 @@ async fn use_case_create_service_with_id(cfg: &ApisixConfig, id: impl Into<Strin
     match admin_create_service_with_id(cfg, service_id.as_str(), &req).await {
         Ok(res) => {
             debug!("Service response: {:?}", res);
-            info!(r#"OK::Service API create service by id: {:?}"#, "test_service");
-            Ok(String::from("test_service"))
+            info!(r#"OK::Service API create service by id: {:?}"#, service_id);
+            Ok(service_id)
         },
         Err(e) => {
             error!("Error creating service by id: {:?}", e);
@@ -115,8 +145,8 @@ async fn use_cases_create_upstream_with_id(cfg: &ApisixConfig, id: impl Into<Str
     match admin_create_upstream_with_id(cfg, upstream_id.as_str(), &upstream_req).await {
         Ok(res) => {
             debug!("Upstream response: {:?}", res);
-            info!(r#"OK::Upstream API create upstream by id: {:?}"#, "test_upstream");
-            Ok(String::from("test_upstream"))
+            info!(r#"OK::Upstream API create upstream by id: {:?}"#, upstream_id);
+            Ok(upstream_id)
         },
         Err(e) => {
             error!("Error creating upstream by id: {:?}", e);

@@ -11,6 +11,7 @@ pub mod client;
 pub mod error;
 pub mod config;
 pub use models::*;
+use crate::admin_route_requests::RouteRequest;
 use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
@@ -105,6 +106,21 @@ pub async fn admin_delete_service(cfg: &ApisixConfig, id: &str) -> Result<()> {
 pub async fn admin_get_routes(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixRoute>>>
 {
     client_admin_impl::api_admin_get_routes(cfg).await
+}
+
+/// Fetches specified Route by id
+pub async fn admin_get_route(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixRoute>> {
+    client_admin_impl::api_admin_get_route(cfg, id).await
+}
+
+/// Creates a Route with the specified id
+pub async fn admin_create_route_with_id(cfg: &ApisixConfig, id: &str, req: &RouteRequest) -> Result<TypedItem<ApisixRoute>> {
+    client_admin_impl::api_admin_create_route_with_id(cfg, id, req).await
+}
+
+/// Removes the Route with the specified id
+pub async fn admin_delete_route(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    client_admin_impl::api_admin_delete_route(cfg, id).await
 }
 
 // region: controller

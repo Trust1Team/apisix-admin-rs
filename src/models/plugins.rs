@@ -10,7 +10,7 @@ pub struct Plugins {
 impl Default for Plugins {
     fn default() -> Self {
         Plugins {
-            key_auth: Some(KeyAuth::default()),
+            key_auth: None,
         }
     }
 }

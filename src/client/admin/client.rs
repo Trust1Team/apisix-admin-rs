@@ -7,10 +7,11 @@ use anyhow::Result;
 use reqwest::Response;
 use serde_json::Value;
 use tracing::{debug, info, instrument};
+use crate::admin_route_requests::RouteRequest;
 use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
-use crate::client::admin::{path_check_version, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
+use crate::client::admin::{path_check_version, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
 use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
@@ -112,9 +113,30 @@ impl AdminConnector {
     // region: route api
     #[instrument(skip(self))]
     pub async fn get_routes(&self) -> Result<ListResponse<TypedItem<ApisixRoute>>> {
-        let path = format!("{}{}", self.cfg.admin_url, path_services());
+        let path = format!("{}{}", self.cfg.admin_url, path_routes());
         debug!("admin_api::get_routes: {}", path);
         get::<ListResponse<TypedItem<ApisixRoute>>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
+    pub async fn get_route(&self, id: &str) -> Result<TypedItem<ApisixRoute>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_route_with_id(id));
+        debug!("admin_api::get_route: {}", path);
+        get::<TypedItem<ApisixRoute>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
+    pub async fn create_route_with_id(&self, id: &str, req: &RouteRequest) -> Result<TypedItem<ApisixRoute>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_route_with_id(id));
+        debug!("admin_api::create_route_with_id: {}", path);
+        put::<RouteRequest, TypedItem<ApisixRoute>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
+    pub async fn delete_route(&self, id: &str) -> Result<Response> {
+        let path = format!("{}{}", self.cfg.admin_url, path_route_with_id(id));
+        debug!("admin_api::delete_route: {}", path);
+        delete(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
     }
     // endregion: route api
 

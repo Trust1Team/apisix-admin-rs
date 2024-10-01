@@ -87,11 +87,17 @@ The required environment variables used:
 
 
 ## TODO
+
+This library started with basic CRUD operations for Apisix resources mostly used in projects. 
+Is does not (yet) implement the full API, but feel free to contribute.
+
 - [ ] Implement the control API endpoints
 - [ ] Response object mapping to Rust Structs (mostly returned as JSON value)
 - [ ] Upstream: Update Upstream builder: add pass_host, upstream_host, health_check, hash_on key, labels, tls, keepalive
 - [ ] Upstream: patch use cases
 - [ ] Service: patch use cases
+- [ ] Route: patch use cases
+- [ ] Missing Plugins (only adding plugins used, but feel free to extend))
 
 ## Remarks
 
