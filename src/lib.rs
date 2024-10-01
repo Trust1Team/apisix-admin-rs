@@ -95,6 +95,11 @@ pub async fn admin_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &Se
     client_admin_impl::api_admin_create_service_with_id(cfg, id, req).await
 }
 
+/// Removes the Service with the specified id
+pub async fn admin_delete_service(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    client_admin_impl::api_admin_delete_service(cfg, id).await
+}
+
 // region: controller
 /// Returns the JSON schema used by the APISIX instance (untyped JSON)
 pub async  fn ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {

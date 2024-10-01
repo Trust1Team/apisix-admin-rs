@@ -99,6 +99,13 @@ impl AdminConnector {
         debug!("admin_api::create_service_with_id: {}", path);
         put::<ServiceRequest, TypedItem<ApisixService>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
     }
+
+    #[instrument(skip(self))]
+    pub async fn delete_service(&self, id: &str) -> Result<Response> {
+        let path = format!("{}{}", self.cfg.admin_url, path_service_with_id(id));
+        debug!("admin_api::delete_service: {}", path);
+        delete(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
     // endregion: service api
 
     // create route

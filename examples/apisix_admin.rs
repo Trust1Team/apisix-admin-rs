@@ -2,7 +2,7 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_upstream, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamTimeout, UpstreamType};
+use apisix_admin_client::{admin_check, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_service, admin_delete_upstream, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamTimeout, UpstreamType};
 use apisix_admin_client::admin_service_requests::{ServiceBuilder, ServiceRequest};
 use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 use apisix_admin_client::error::ApisixClientError;
@@ -48,7 +48,9 @@ async fn admin_ucs() -> Result<()> {
 
 
     // Clean up
-    //let _ = admin_delete_upstream(&cfg, &upstream_id).await.map(|_| info!("OK::upstream_delete"))?;
+    let _ = admin_delete_service(&cfg, &service_id).await.map(|_| info!("OK::service_delete"))?;
+    let _ = admin_delete_upstream(&cfg, &upstream_id).await.map(|_| info!("OK::upstream_delete"))?;
+
 
     info!("=== Example::Apisix Admin Client END ===");
     Ok(())

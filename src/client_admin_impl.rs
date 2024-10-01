@@ -60,4 +60,10 @@ pub async fn api_admin_create_service_with_id(cfg: &ApisixConfig, id: &str, req:
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
     ac.create_service_with_id(id, req).await.map_err(|e| InvalidRequest(e.to_string()))
 }
+
+#[instrument(skip_all)]
+pub async fn api_admin_delete_service(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.delete_service(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
+}
 // endregion: service
