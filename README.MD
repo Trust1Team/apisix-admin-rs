@@ -87,11 +87,11 @@ The required environment variables used:
 
 
 ## TODO
-- [ ] Implement all the Apisix Admin API endpoints
-- [ ] Response object mapping to Rust Structs (mostly returned as JSON)
+- [ ] Implement the control API endpoints
+- [ ] Response object mapping to Rust Structs (mostly returned as JSON value)
 - [ ] Upstream: Update Upstream builder: add pass_host, upstream_host, health_check, hash_on key, labels, tls, keepalive
-- [ ] Upstream: patch Upstream
-- 
+- [ ] Upstream: patch use cases
+- [ ] Service: patch use cases
 
 ## Remarks
 [ID Syntax](https://apisix.apache.org/docs/apisix/admin-api/#quick-note-on-id-syntax)

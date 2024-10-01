@@ -1,14 +1,16 @@
-pub mod requests;
-pub mod responses;
-pub mod common;
-pub mod session;
 pub mod ctrl_api_responses;
 pub mod admin_api_responses;
 mod admin_api_upstream_requests;
+mod admin_api_service_requests;
+mod plugins;
+
+use std::fmt;
+use std::num::NonZeroU32;
 pub use admin_api_upstream_requests::*;
 
 use rand::distr::Alphanumeric;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
+use serde::de::Visitor;
 
 /// ID's as a text string must be of a length between 1 and 64 characters
 /// and they should only contain uppercase, lowercase, numbers
@@ -16,7 +18,7 @@ use serde::{Deserialize, Serialize};
 /// For integer values they simply must have a minimum character count of 1.
 pub (super) fn generate_identifier() -> String {
     use rand::Rng;
-    format!("gen_{}", rand::thread_rng()
+    format!("gen-{}", rand::thread_rng()
         .sample_iter(&Alphanumeric)
         .take(12)
         .map(char::from)
@@ -28,9 +30,7 @@ mod tests {
     use super::*;
     use tracing::{error, info};
     use tracing_test::traced_test;
-    use crate::common::Interaction;
     use crate::models::admin_api_upstream_requests::UpstreamType;
-    use crate::models::requests::InteractionFlow;
 
     #[traced_test]
     #[tokio::test]

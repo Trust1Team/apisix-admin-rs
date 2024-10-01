@@ -5,6 +5,7 @@ use std::fmt::Debug;
 use std::future::Future;
 use std::path::PathBuf;
 use std::time::Duration;
+use reqwest::Response;
 use tokio::fs::File;
 use tokio::time::sleep;
 use tracing::{debug, error};
@@ -101,19 +102,18 @@ pub async fn delete(
     url: &str,
     apikey: &str,
     timeout_millis: u64,
-) -> Result<()> {
+) -> Result<Response> {
     let client = reqwest::Client::builder()
         //.danger_accept_invalid_certs(true)
         .timeout(Duration::from_millis(timeout_millis))
         .build()?;
-    let res = client
+    client
         .delete(url)
         .header(HEADER_CONTENT_TYPE, HEADER_CONTENT_TYPE_DEFAULT)
         .header(HEADER_API_KEY, apikey)
         .header(HEADER_USER_AGENT, format!("apisix-admin-client/{:?}/rust/{:?}",HEADER_USER_AGENT_VERSION, HEADER_USER_AGENT_RUST_VERSION))
         .send()
-        .await?;
-    Ok(())
+        .await.map_err(|e| e.into())
 }
 
 /// Generic POST request

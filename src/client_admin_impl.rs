@@ -1,43 +1,38 @@
 use tracing::instrument;
-use anyhow::Result;
-use serde_json::Value;
 use crate::client::AdminConnector;
 use crate::config::ApisixConfig;
-use crate::models::admin_api_responses::{ListResponse, TypedItem, Upstream};
+use crate::error::ApisixClientError::InvalidRequest;
+use crate::models::admin_api_responses::{ListResponse, TypedItem, ApisixUpstream};
 use crate::models::UpstreamRequest;
+
+type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 
 #[instrument(skip_all)]
 pub async fn api_admin_check_version(cfg: &ApisixConfig) -> Result<()> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
-    ac.check_version().await
+    ac.check_version().await.map_err(|e| InvalidRequest(e.to_string()))
 }
 
 #[instrument(skip_all)]
-pub async fn api_admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<Upstream>>> {
+pub async fn api_admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixUpstream>>> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
-    ac.get_upstreams().await
+    ac.get_upstreams().await.map_err(|e| InvalidRequest(e.to_string()))
 }
 
 #[instrument(skip_all)]
-pub async fn api_admin_get_upstream(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<Upstream>> {
+pub async fn api_admin_get_upstream(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixUpstream>> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
-    ac.get_upstream(id).await
+    ac.get_upstream(id).await.map_err(|e| InvalidRequest(e.to_string()))
 }
 
 #[instrument(skip_all)]
-pub async fn api_admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+pub async fn api_admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &UpstreamRequest) -> Result<TypedItem<ApisixUpstream>> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
-    ac.create_upstream_with_id(id, req).await
-}
-
-#[instrument(skip_all)]
-pub async fn api_admin_create_upstream(cfg: &ApisixConfig, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
-    let ac: AdminConnector =  AdminConnector::new(cfg).await;
-    ac.create_upstream(req).await
+    ac.create_upstream_with_id(id, req).await.map_err(|e| InvalidRequest(e.to_string()))
 }
 
 #[instrument(skip_all)]
 pub async fn api_admin_delete_upstream(cfg: &ApisixConfig, id: &str) -> Result<()> {
     let ac: AdminConnector =  AdminConnector::new(cfg).await;
-    ac.delete_upstream(id).await
+    ac.delete_upstream(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
 }

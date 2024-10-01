@@ -161,7 +161,7 @@ impl Default for UpstreamRequest {
         }"#;
         let nodes = serde_json::from_str(nodes).unwrap();
         UpstreamRequest {
-            id: None, //Some(generate_identifier())
+            id: Some(generate_identifier()),
             retries: Some(0_i32), //disabled by default
             retry_timeout: Some(0_i32),
             timeout: None,
@@ -257,9 +257,7 @@ mod tests {
     use super::*;
     use tracing::{error, info};
     use tracing_test::traced_test;
-    use crate::common::Interaction;
     use crate::models::admin_api_upstream_requests::UpstreamType;
-    use crate::models::requests::InteractionFlow;
 
     #[traced_test]
     #[tokio::test]

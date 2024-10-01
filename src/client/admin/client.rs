@@ -4,13 +4,15 @@
 //! The architecture design gives an idea about how everything fits together.
 
 use anyhow::Result;
+use reqwest::Response;
 use serde_json::Value;
 use tracing::{debug, info, instrument};
-use crate::client::admin::{path_check_version, path_upstream_with_id, path_upstreams, ADMIN_PATH};
+use crate::admin_api_responses::ApisixService;
+use crate::client::admin::{path_check_version, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
 use crate::config::ApisixConfig;
 use crate::error::ApisixClientError;
-use crate::models::admin_api_responses::{GenericJsonResponse, ListResponse, TypedItem, Upstream};
+use crate::models::admin_api_responses::{GenericJsonResponse, ListResponse, TypedItem, ApisixUpstream};
 use crate::models::UpstreamRequest;
 
 #[derive(Debug)]
@@ -36,7 +38,7 @@ impl AdminConnector {
         }
     }
 
-    #[instrument]
+    #[instrument(skip(self))]
     pub async fn check_version(&self) -> Result<()> {
         let path = format!("{}{}", self.cfg.admin_url, path_check_version());
         debug!("admin_api::check_version: {}", path);
@@ -45,39 +47,43 @@ impl AdminConnector {
     }
 
     // region: upstream api
-    pub async fn get_upstreams(&self) -> Result<ListResponse<TypedItem<Upstream>>> {
+    #[instrument(skip(self))]
+    pub async fn get_upstreams(&self) -> Result<ListResponse<TypedItem<ApisixUpstream>>> {
         let path = format!("{}{}", self.cfg.admin_url, path_upstreams());
         debug!("admin_api::get_upstreams: {}", path);
-        get::<ListResponse<TypedItem<Upstream>>>(path.as_str(), self.cfg.admin_apikey.as_str() , self.cfg.client_request_timeout).await
+        get::<ListResponse<TypedItem<ApisixUpstream>>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
     }
 
-    pub async fn get_upstream(&self, id: &str) -> Result<TypedItem<Upstream>> {
+    #[instrument(skip(self))]
+    pub async fn get_upstream(&self, id: &str) -> Result<TypedItem<ApisixUpstream>> {
         let path = format!("{}{}", self.cfg.admin_url, path_upstream_with_id(id));
         debug!("admin_api::get_upstream: {}", path);
-        get::<TypedItem<Upstream>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+        get::<TypedItem<ApisixUpstream>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
     }
 
-    pub async fn create_upstream_with_id(&self, id: &str, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+    #[instrument(skip(self))]
+    pub async fn create_upstream_with_id(&self, id: &str, req: &UpstreamRequest) -> Result<TypedItem<ApisixUpstream>> {
         let path = format!("{}{}", self.cfg.admin_url, path_upstream_with_id(id));
         debug!("admin_api::create_upstream_with_id: {}", path);
-        put::<UpstreamRequest, TypedItem<Upstream>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
+        put::<UpstreamRequest, TypedItem<ApisixUpstream>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
     }
 
-    pub async fn create_upstream(&self, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
-        let path = format!("{}{}", self.cfg.admin_url, path_upstreams());
-        debug!("admin_api::create_upstream: {}", path);
-        post::<UpstreamRequest, TypedItem<Upstream>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
-    }
-
-    pub async fn delete_upstream(&self, id: &str) -> Result<()> {
+    #[instrument(skip(self))]
+    pub async fn delete_upstream(&self, id: &str) -> Result<Response> {
         let path = format!("{}{}", self.cfg.admin_url, path_upstream_with_id(id));
         debug!("admin_api::delete_upstream: {}", path);
         delete(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
     }
-
     // endregion: upstream api
 
-    // create service
+    // region: service api
+    #[instrument(skip(self))]
+    pub async fn get_services(&self) -> Result<ListResponse<TypedItem<ApisixService>>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_services());
+        debug!("admin_api::get_services: {}", path);
+        get::<ListResponse<TypedItem<ApisixService>>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+    // endregion: service api
 
     // create route
 

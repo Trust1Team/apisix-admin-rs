@@ -4,22 +4,22 @@
 //!
 //! Maintained by [Trust1Team](https://trust1team.com) for [Apisix](https://apisix.apache.org/)
 
-use anyhow::Result;
 use serde_json::Value;
 mod models;
 use crate::config::ApisixConfig;
 pub mod client;
-mod error;
+pub mod error;
 pub mod config;
 pub use models::*;
 pub mod client_admin_impl;
 pub mod client_ctrl_impl;
 
+type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
+
 /// Common models are exposed
-pub use models::common;
 use crate::client_admin_impl::{api_admin_check_version, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
-use crate::models::admin_api_responses::{ListResponse, TypedItem, Upstream};
+use crate::models::admin_api_responses::{ListResponse, TypedItem, ApisixUpstream};
 use crate::models::ctrl_api_responses::CtrlHealthCheckResponse;
 
 /// Get configuration based on the environment variables (default config override)
@@ -41,30 +41,35 @@ pub async fn get_config_default() -> ApisixConfig {
     ApisixConfig::default()
 }
 
+
+
 /// Check if the Admin API is up and running
 pub async fn admin_check(cfg: &ApisixConfig) -> Result<()> {
     api_admin_check_version(cfg).await
 }
 
 /// Fetch a list of all configured Upstreams
-pub async fn admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<Upstream>>> {
+pub async fn admin_get_upstreams(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixUpstream>>> {
     api_admin_get_upstreams(cfg).await
 }
 
 /// Fetches specified Upstream by id
-pub async fn admin_get_upstream(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<Upstream>> {
+pub async fn admin_get_upstream(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixUpstream>> {
     client_admin_impl::api_admin_get_upstream(cfg, id).await
 }
 
 /// Creates a Route with the specified id
-pub async fn admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+pub async fn admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &UpstreamRequest) -> Result<TypedItem<ApisixUpstream>> {
     client_admin_impl::api_admin_create_upstream_with_id(cfg, id, req).await
 }
 
 /// Creates an Upstream and assigns a random id
-pub async fn admin_create_upstream(cfg: &ApisixConfig, req: &UpstreamRequest) -> Result<TypedItem<Upstream>> {
+/// The default behaviour is that Apisix generated an ID for you, but that causes problems as Apisix
+/// allows the use of integers or strings for id's.
+/// We force a random generated string, fallback is the default Apisix behaviour
+/*pub async fn admin_create_upstream(cfg: &ApisixConfig, req: &UpstreamRequest) -> Result<TypedItem<ApisixUpstream>> {
     client_admin_impl::api_admin_create_upstream(cfg, req).await
-}
+}*/
 
 /// Removes the Upstream with the specified id
 pub async fn admin_delete_upstream(cfg: &ApisixConfig, id: &str) -> Result<()> {

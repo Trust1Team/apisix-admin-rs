@@ -1,5 +1,7 @@
 use thiserror::Error;
 
+pub type ApisixLibError<T> = Result<T, ApisixClientError>;
+
 #[derive(Error, Debug)]
 #[non_exhaustive]
 pub enum ApisixClientError {
@@ -12,7 +14,7 @@ pub enum ApisixClientError {
     AdminException(&'static str),
 
     #[error("Invalid request")]
-    InvalidRequest,
+    InvalidRequest(String),
 
     /// Session timed out
     #[error("Session time-out exception")]
