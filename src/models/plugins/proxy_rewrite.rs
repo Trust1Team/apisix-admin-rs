@@ -4,6 +4,7 @@ use strum_macros::{Display, EnumString};
 use crate::{Result};
 use crate::models::Plugin;
 
+/// Builder pattern to create a ProxyRewrite
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ProxyRewriteBuilder {
@@ -82,6 +83,9 @@ impl ProxyRewriteBuilder {
         })
     }
 }
+
+/// The proxy-rewrite Plugin rewrites Upstream proxy information such as scheme, uri and host.
+/// [Documentation](https://apisix.apache.org/docs/apisix/plugins/proxy-rewrite/)
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ProxyRewrite {
@@ -140,6 +144,7 @@ pub struct ProxyRewriteHeaders {
     pub remove: Option<Value>,
 }
 
+/// Rewrites the HTTP method
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Display, EnumString)]
 #[allow(non_camel_case_types)]
 #[strum(ascii_case_insensitive)]

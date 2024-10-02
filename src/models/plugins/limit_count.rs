@@ -5,6 +5,7 @@ use crate::error::ApisixClientError;
 use crate::{Result};
 use crate::models::Plugin;
 
+/// Builder to create a LimitCount
 #[serde_with::skip_serializing_none]
 #[derive(Validate, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LimitCountBuilder {
@@ -183,6 +184,9 @@ impl LimitCountBuilder {
     }
 }
 
+/// The limit-count Plugin limits the number of requests to your service by a given count per time.
+/// The plugin is using Fixed Window algorithm.
+/// [Documentation](https://apisix.apache.org/docs/apisix/plugins/limit-count/)
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LimitCount {
@@ -269,6 +273,8 @@ impl From<LimitCount> for LimitCountBuilder {
 }
 
 impl Plugin for LimitCount {}
+
+/// Type of user specified key to use
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Display, EnumString)]
 #[allow(non_camel_case_types)]
 #[strum(ascii_case_insensitive)]
@@ -279,6 +285,7 @@ pub enum LimitCountKeyType {
     constant,
 }
 
+/// Rate-limiting policies to use for retrieving and increment the limit count
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Display)]
 #[allow(non_camel_case_types)]
 #[non_exhaustive]

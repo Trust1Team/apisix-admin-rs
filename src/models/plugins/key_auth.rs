@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use crate::{Result};
 use crate::models::Plugin;
 
+/// Builder pattern to create a KeyAuth
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct KeyAuthBuilder {
@@ -44,6 +45,10 @@ impl KeyAuthBuilder {
     }
 }
 
+/// The key-auth Plugin is used to add an authentication key (API key) to a Route or a Service.
+/// This works well with a Consumer. Consumers of the API can then add their key to
+/// the query string or the header to authenticate their requests.
+/// [Documentation](https://apisix.apache.org/docs/apisix/plugins/key-auth/)
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct KeyAuth {

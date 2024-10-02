@@ -56,7 +56,7 @@ impl RouteBuilder {
         self
     }
 
-    /// Plugins that are executed during the request/response cycle. See [@Plugins] for more
+    /// Plugins that are executed during the request/response cycle. See [Plugins] for more
     pub fn with_plugins(mut self, plugins: Plugins) -> Self {
         self.plugins = Some(plugins);
         self

@@ -65,11 +65,11 @@ pub async fn admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &U
     client_admin_impl::api_admin_create_upstream_with_id(cfg, id, req).await
 }
 
-/// Creates an Upstream and assigns a random id
+/*/// Creates an Upstream and assigns a random id
 /// The default behaviour is that Apisix generated an ID for you, but that causes problems as Apisix
 /// allows the use of integers or strings for id's.
 /// We force a random generated string, fallback is the default Apisix behaviour
-/*pub async fn admin_create_upstream(cfg: &ApisixConfig, req: &UpstreamRequest) -> Result<TypedItem<ApisixUpstream>> {
+pub async fn admin_create_upstream(cfg: &ApisixConfig, req: &UpstreamRequest) -> Result<TypedItem<ApisixUpstream>> {
     client_admin_impl::api_admin_create_upstream(cfg, req).await
 }*/
 
