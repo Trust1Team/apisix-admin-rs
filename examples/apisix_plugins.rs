@@ -27,7 +27,8 @@ async fn admin_plugin_config() -> Result<()> {
         .with_query("apikey")
         .with_hide_credentials(true)
         .build()?;
-    info!("KeyAuthPlugin::OK::{:?}", pka);
+    debug!("KeyAuthPlugin::OK::{:?}", pka);
+    info!("KeyAuthPlugin::OK");
 
     // ProxyRewrite Plugin
     let ppr_headers: ProxyRewriteHeaders = ProxyRewriteHeaders {
@@ -48,7 +49,8 @@ async fn admin_plugin_config() -> Result<()> {
         .with_host("localhost")
         .with_headers(ppr_headers)
         .build()?;
-    info!("ProxyRewritePlugin::OK::{:?}", ppr);
+    debug!("ProxyRewritePlugin::OK::{:?}", ppr);
+    info!("ProxyRewritePlugin::OK");
 
     // LimitCount Plugin
     let plc = LimitCountBuilder::new()
@@ -58,7 +60,8 @@ async fn admin_plugin_config() -> Result<()> {
         .with_key("remote_addr")
         .with_policy(LimitCountPolicy::local)
         .build()?;
-    info!("LimitCountPlugin::OK::{:?}", plc);
+    debug!("LimitCountPlugin::OK::{:?}", plc);
+    info!("LimitCountPlugin::OK");
 
     // Plugin collection
     let plugins: Plugins = Plugins {

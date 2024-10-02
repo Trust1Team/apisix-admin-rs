@@ -121,3 +121,23 @@ Read the conventions upon ID Syntax:
 This library assumes that all Apisix resources are created with a unique ID. The ID is a string that is unique within the scope of the resource type. The ID is used to identify the resource in the Apisix Admin API. 
 The ID must be a string literal, integer literals are not supported yet (both are possible in Apisix).
 
+## Examples
+
+Run the examples:
+In case you need debug logs:
+```shell
+RUST_LOG=info,apisix_admin=debug,apisix_plugins=debug cargo run --example apisix-admin
+```
+
+### Admin Resources examples:
+
+```shell
+cargo run --example apisix-admin
+```
+
+### Plugin examples:
+
+```shell
+cargo run --example apisix-plugins
+```
+
