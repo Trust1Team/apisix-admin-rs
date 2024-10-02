@@ -46,7 +46,8 @@ impl From<ApisixConfig> for ApisixConfigBuilder {
 /// # type Result<T> = std::result::Result<T, ApisixClientError>;
 /// # use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 /// let cfg: Result<ApisixConfig> = ApisixConfigBuilder::new()
-///     .url("http://localhost:9080") // DEV environment
+///     .with_url("http://localhost:9080") // DEV environment
+///     .with_admin_url("http://localhost:9180") // DEV environment
 ///     .build();
 /// ```
 #[derive(Debug, Clone)]
@@ -63,27 +64,27 @@ impl ApisixConfigBuilder {
         ApisixConfig::default().into() //from env
     }
 
-    pub fn url(&mut self, url: impl Into<String>) -> &mut Self {
+    pub fn with_url(&mut self, url: impl Into<String>) -> &mut Self {
         let _ = self.url.insert(url.into());
         self
     }
 
-    pub fn admin_url(&mut self, admin_url: impl Into<String>) -> &mut Self {
+    pub fn with_admin_url(&mut self, admin_url: impl Into<String>) -> &mut Self {
         let _ = self.admin_url.insert(admin_url.into());
         self
     }
 
-    pub fn control_url(&mut self, control_url: impl Into<String>) -> &mut Self {
+    pub fn with_control_url(&mut self, control_url: impl Into<String>) -> &mut Self {
         let _ = self.control_url.insert(control_url.into());
         self
     }
 
-    pub fn admin_path(&mut self, admin_path:  impl Into<String>) -> &mut Self {
+    pub fn with_admin_path(&mut self, admin_path:  impl Into<String>) -> &mut Self {
         let _ = self.admin_apikey.insert(admin_path.into());
         self
     }
 
-    pub fn client_request_timeout(&mut self, client_request_timeout: u64) -> &mut Self {
+    pub fn with_client_request_timeout(&mut self, client_request_timeout: u64) -> &mut Self {
         let _ = self.client_request_timeout.insert(client_request_timeout);
         self
     }

@@ -28,8 +28,8 @@ async fn admin_ucs() -> Result<()> {
     // Get default Config (from environment variables)
     // let cfg = get_config_from_env().await;
     // or use builder pattern to construct the config
-    //let cfg = ApisixConfigBuilder::new().admin_url("http://mbwgm22d.ngrok.app").build().expect("Error building config");
-    let cfg = ApisixConfigBuilder::new().admin_url("http://localhost:9180").build().expect("Error building config");
+    //let cfg = ApisixConfigBuilder::new().with_admin_url("http://mbwgm22d.ngrok.app").build().expect("Error building config");
+    let cfg = ApisixConfigBuilder::new().with_admin_url("http://localhost:9180").build().expect("Error building config");
 
     debug!("Apisix Config: {:?}", cfg);
 
