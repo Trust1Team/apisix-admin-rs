@@ -25,6 +25,7 @@ type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 use crate::client_admin_impl::{api_admin_check_version, api_admin_get_services, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
 use crate::common::{ListResponse, TypedItem};
+use crate::consumer_group_requests::ConsumerGroupRequest;
 use crate::consumer_group_responses::ApisixConsumerGroup;
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::ctrl_responses::CtrlHealthCheckResponse;
@@ -65,7 +66,7 @@ pub async fn admin_get_upstream(cfg: &ApisixConfig, id: &str) -> Result<TypedIte
     client_admin_impl::api_admin_get_upstream(cfg, id).await
 }
 
-/// Creates a Route with the specified id
+/// Creates or updates a Route with the specified id
 pub async fn admin_create_upstream_with_id(cfg: &ApisixConfig, id: &str, req: &UpstreamRequest) -> Result<TypedItem<ApisixUpstream>> {
     client_admin_impl::api_admin_create_upstream_with_id(cfg, id, req).await
 }
@@ -93,7 +94,7 @@ pub async fn admin_get_service(cfg: &ApisixConfig, id: &str) -> Result<TypedItem
     client_admin_impl::api_admin_get_service(cfg, id).await
 }
 
-/// Creates a Service with the specified id
+/// Creates or updates a Service with the specified id
 pub async fn admin_create_service_with_id(cfg: &ApisixConfig, id: &str, req: &ServiceRequest) -> Result<TypedItem<ApisixService>> {
     client_admin_impl::api_admin_create_service_with_id(cfg, id, req).await
 }
@@ -114,7 +115,7 @@ pub async fn admin_get_route(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<A
     client_admin_impl::api_admin_get_route(cfg, id).await
 }
 
-/// Creates a Route with the specified id
+/// Creates or updates a Route with the specified id
 pub async fn admin_create_route_with_id(cfg: &ApisixConfig, id: &str, req: &RouteRequest) -> Result<TypedItem<ApisixRoute>> {
     client_admin_impl::api_admin_create_route_with_id(cfg, id, req).await
 }
@@ -129,6 +130,20 @@ pub async fn admin_get_consumer_groups(cfg: &ApisixConfig) -> Result<ListRespons
     client_admin_impl::api_admin_get_consumer_groups(cfg).await
 }
 
+/// Fetches specified Consumer group by id
+pub async fn admin_get_consumer_group(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixConsumerGroup>> {
+    client_admin_impl::api_admin_get_consumer_group(cfg, id).await
+}
+
+/// Creates or updates a new Consumer group with the specified id
+pub async fn admin_create_consumer_group_with_id(cfg: &ApisixConfig, id: &str, req: &ConsumerGroupRequest) -> Result<TypedItem<ApisixConsumerGroup>> {
+    client_admin_impl::api_admin_create_consumer_group_with_id(cfg, id, req).await
+}
+
+/// Removes the Consumer group with the specified id
+pub async fn admin_delete_consumer_group(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    client_admin_impl::api_admin_delete_consumer_group(cfg, id).await
+}
 // region: controller
 /// Returns the JSON schema used by the APISIX instance (untyped JSON)
 pub async  fn ctrl_schema(cfg: &ApisixConfig) -> Result<Value> {
