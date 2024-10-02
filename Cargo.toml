@@ -24,6 +24,10 @@ name = "apisix-admin"
 path = "examples/apisix_admin.rs"
 
 [[example]]
+name = "apisix-plugins"
+path = "examples/apisix_plugins.rs"
+
+[[example]]
 name = "apisix-ctrl"
 path = "examples/apisix_ctrl.rs"
 

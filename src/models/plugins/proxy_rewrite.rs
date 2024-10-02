@@ -134,7 +134,7 @@ impl Plugin for ProxyRewrite {}
 /// [remove]: Remove the headers. The format is ["name", ...]
 #[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct ProxyRewriteHeaders {
+pub struct ProxyRewriteHeaders {
     pub set: Option<Value>,
     pub add: Option<Value>,
     pub remove: Option<Value>,

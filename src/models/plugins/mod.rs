@@ -16,6 +16,8 @@ pub struct Plugins {
     pub key_auth: Option<KeyAuth>,
     #[serde(rename = "proxy-rewrite")]
     pub proxy_rewrite: Option<ProxyRewrite>,
+    #[serde(rename = "limit-count")]
+    pub limit_count: Option<LimitCount>,
 }
 
 impl Default for Plugins {
@@ -23,6 +25,7 @@ impl Default for Plugins {
         Plugins {
             key_auth: None,
             proxy_rewrite: None,
+            limit_count: None,
         }
     }
 }
