@@ -11,12 +11,14 @@ use crate::admin_route_requests::RouteRequest;
 use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
-use crate::client::admin::{path_check_version, path_consumer_group_with_id, path_consumer_groups, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
+use crate::client::admin::{path_check_version, path_consumer, path_consumer_group_with_id, path_consumer_groups, path_consumer_with_id, path_consumer_with_id_and_path, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
 use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
 use crate::consumer_group_requests::ConsumerGroupRequest;
 use crate::consumer_group_responses::ApisixConsumerGroup;
+use crate::consumer_requests::ConsumerRequest;
+use crate::consumer_responses::ApisixConsumer;
 use crate::error::ApisixClientError;
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::UpstreamRequest;
@@ -172,5 +174,34 @@ impl AdminConnector {
     }
     // endregion: consumer group api
 
+    // region: consumer api
+    #[instrument(skip(self))]
+    pub (crate) async fn get_consumers(&self) -> Result<ListResponse<TypedItem<ApisixConsumer>>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_consumer());
+        debug!("admin_api::get_consumers: {}", path);
+        get::<ListResponse<TypedItem<ApisixConsumer>>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
+    pub (crate) async fn get_consumer(&self, id: &str) -> Result<TypedItem<ApisixConsumer>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_consumer_with_id(id));
+        debug!("admin_api::get_consumer: {}", path);
+        get::<TypedItem<ApisixConsumer>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
+    pub (crate) async fn create_consumer(&self, id: &str, req: &ConsumerRequest) -> Result<TypedItem<ApisixConsumer>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_consumer());
+        debug!("admin_api::create_consumer: {}", path);
+        put::<ConsumerRequest, TypedItem<ApisixConsumer>>(path.as_str(), self.cfg.admin_apikey.as_str(), req, self.cfg.client_request_timeout).await
+    }
+
+    #[instrument(skip(self))]
+    pub (crate) async fn delete_consumer(&self, id: &str) -> Result<Response> {
+        let path = format!("{}{}", self.cfg.admin_url, path_consumer_with_id(id));
+        debug!("admin_api::delete_consumer: {}", path);
+        delete(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+    // endregion: consumer api
 
 }

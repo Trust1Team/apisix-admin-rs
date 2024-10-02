@@ -20,6 +20,9 @@ fn path_routes_with_id_and_path(id: &str, path: &str) -> String { format!("{}/ro
 fn path_consumer_groups() -> String { format!("{}/consumer_groups", ADMIN_PATH) }
 fn path_consumer_group_with_id(id: &str) -> String { format!("{}/consumer_groups/{}", ADMIN_PATH, id) }
 fn path_consumer_groups_with_id_and_path(id: &str, path: &str) -> String { format!("{}/consumer_groups/{}/{}", ADMIN_PATH, id, path) }
+fn path_consumer() -> String { format!("{}/consumers", ADMIN_PATH) }
+fn path_consumer_with_id(id: &str) -> String { format!("{}/consumers/{}", ADMIN_PATH, id) }
+fn path_consumer_with_id_and_path(id: &str, path: &str) -> String { format!("{}/consumers/{}/{}", ADMIN_PATH, id, path) }
 // endregion: Path definitions
 
 

@@ -27,6 +27,8 @@ use crate::client_ctrl_impl::api_ctrl_schema;
 use crate::common::{ListResponse, TypedItem};
 use crate::consumer_group_requests::ConsumerGroupRequest;
 use crate::consumer_group_responses::ApisixConsumerGroup;
+use crate::consumer_requests::ConsumerRequest;
+use crate::consumer_responses::ApisixConsumer;
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::ctrl_responses::CtrlHealthCheckResponse;
 
@@ -143,6 +145,26 @@ pub async fn admin_create_consumer_group_with_id(cfg: &ApisixConfig, id: &str, r
 /// Removes the Consumer group with the specified id
 pub async fn admin_delete_consumer_group(cfg: &ApisixConfig, id: &str) -> Result<()> {
     client_admin_impl::api_admin_delete_consumer_group(cfg, id).await
+}
+
+/// Fetches a list of all Consumers
+pub async fn admin_get_consumers(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixConsumer>>> {
+    client_admin_impl::api_admin_get_consumers(cfg).await
+}
+
+/// Fetches specified Consumer by username
+pub async fn admin_get_consumer(cfg: &ApisixConfig, username: &str) -> Result<TypedItem<ApisixConsumer>> {
+    client_admin_impl::api_admin_get_consumer(cfg, username).await
+}
+
+/// Create new Consumer
+pub async fn admin_create_consumer_with_name(cfg: &ApisixConfig, id: &str, req: &ConsumerRequest) -> Result<TypedItem<ApisixConsumer>> {
+    client_admin_impl::api_admin_create_consumer(cfg, id, req).await
+}
+
+/// Removes the Consumer with the specified username
+pub async fn admin_delete_consumer(cfg: &ApisixConfig, username: &str) -> Result<()> {
+    client_admin_impl::api_admin_delete_consumer(cfg, username).await
 }
 // region: controller
 /// Returns the JSON schema used by the APISIX instance (untyped JSON)

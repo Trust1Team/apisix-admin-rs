@@ -21,11 +21,13 @@ impl ConsumerGroupBuilder {
         self
     }
 
+    /// Description of usage scenarios
     pub fn with_desc(mut self, desc: String) -> Self {
         self.desc = Some(desc);
         self
     }
 
+    /// Plugins that are executed during the request/response cycle. See [@Plugins] for more
     pub fn with_plugins(mut self, plugins: Plugins) -> Self {
         self.plugins = plugins;
         self

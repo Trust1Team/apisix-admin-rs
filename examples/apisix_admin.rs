@@ -2,12 +2,13 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_consumer_group_with_id, admin_create_route_with_id, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_consumer_group, admin_delete_route, admin_delete_service, admin_delete_upstream, admin_get_consumer_group, admin_get_consumer_groups, admin_get_route, admin_get_routes, admin_get_service, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType};
+use apisix_admin_client::{admin_check, admin_create_consumer_with_name, admin_create_consumer_group_with_id, admin_create_route_with_id, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_consumer_group, admin_delete_route, admin_delete_service, admin_delete_upstream, admin_get_consumer_group, admin_get_consumer_groups, admin_get_consumers, admin_get_route, admin_get_routes, admin_get_service, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType, admin_get_consumer, admin_delete_consumer};
 use apisix_admin_client::admin_route_requests::{RouteBuilder, RouteRequest};
 use apisix_admin_client::admin_service_requests::{ServiceBuilder, ServiceRequest};
 use apisix_admin_client::common::ApisixTimeout;
 use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
 use apisix_admin_client::consumer_group_requests::{ConsumerGroupBuilder, ConsumerGroupRequest};
+use apisix_admin_client::consumer_requests::{ConsumerBuilder, ConsumerRequest};
 use apisix_admin_client::error::ApisixClientError;
 use apisix_admin_client::plugins::{Plugin, Plugins};
 
@@ -62,7 +63,15 @@ async fn admin_ucs() -> Result<()> {
     let _ = use_case_create_consumer_group_with_id(&cfg, consumer_group_id).await?;
     let _ = admin_get_consumer_group(&cfg, consumer_group_id).await.map(|_| info!("OK::admin_get_consumer_group"))?;
 
+    // Consumer
+    let consumer_id = "michallis";
+    let _ = admin_get_consumers(&cfg).await.map(|_| info!("OK::admin_get_consumers"))?;
+    let _ = use_case_create_consumer_with_id(&cfg, consumer_id, consumer_group_id.to_string()).await?;
+    let _ = admin_get_consumer(&cfg, consumer_id).await.map(|_| info!("OK::admin_get_consumer"))?;
+
+
     // Clean up (reverse)
+    let _ = admin_delete_consumer(&cfg, &consumer_id).await.map(|_| info!("OK::consumer_delete"))?;
     let _ = admin_delete_consumer_group(&cfg, &consumer_group_id).await.map(|_| info!("OK::consumer_group_delete"))?;
     let _ = admin_delete_route(&cfg, &route_id).await.map(|_| info!("OK::route_delete"))?;
     let _ = admin_delete_service(&cfg, &service_id).await.map(|_| info!("OK::service_delete"))?;
@@ -73,6 +82,29 @@ async fn admin_ucs() -> Result<()> {
 }
 
 // region: helpers
+async fn use_case_create_consumer_with_id(cfg: &ApisixConfig, id: impl Into<String>, group_id: String) -> Result<String> {
+    let c_id: String = id.into();
+
+    let req: ConsumerRequest = ConsumerBuilder::new()
+        .with_desc("Test Consumer".to_string())
+        .with_username("michallis".to_string())
+        .with_group_id(group_id)
+        .build()?;
+
+    debug!("==> Creating Consumer with custom id: {:?}", serde_json::to_string(&req));
+
+    match admin_create_consumer_with_name(cfg, c_id.as_str(), &req).await {
+        Ok(res) => {
+            debug!("Consumer response: {:?}", res);
+            info!(r#"OK::Consumer API create route by id: {:?}"#, c_id);
+            Ok(c_id)
+        },
+        Err(e) => {
+            error!("Error creating consumer by id: {:?}", e);
+            Err(e)
+        }
+    }
+}
 async fn use_case_create_consumer_group_with_id(cfg: &ApisixConfig, id: impl Into<String>) -> Result<String> {
     let cg_id: String = id.into();
 

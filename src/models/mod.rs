@@ -9,6 +9,8 @@ pub mod admin_route_requests;
 pub mod admin_route_responses;
 pub mod consumer_group_requests;
 pub mod consumer_group_responses;
+pub mod consumer_requests;
+pub mod consumer_responses;
 
 pub use admin_upstream_requests::*;
 

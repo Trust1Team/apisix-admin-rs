@@ -8,6 +8,8 @@ use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
 use crate::consumer_group_requests::ConsumerGroupRequest;
 use crate::consumer_group_responses::ApisixConsumerGroup;
+use crate::consumer_requests::ConsumerRequest;
+use crate::consumer_responses::ApisixConsumer;
 use crate::error::ApisixClientError::InvalidRequest;
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::UpstreamRequest;
@@ -123,3 +125,30 @@ pub (crate) async fn api_admin_delete_consumer_group(cfg: &ApisixConfig, id: &st
     ac.delete_consumer_group(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
 }
 // endregion: consumer group
+
+// region: consumer
+#[instrument(skip_all)]
+pub (crate) async fn api_admin_get_consumers(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixConsumer>>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_consumers().await.map_err(|e| InvalidRequest(e.to_string()))
+}
+
+#[instrument(skip_all)]
+pub (crate) async fn api_admin_get_consumer(cfg: &ApisixConfig, id: &str) -> Result<TypedItem<ApisixConsumer>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_consumer(id).await.map_err(|e| InvalidRequest(e.to_string()))
+}
+
+#[instrument(skip_all)]
+pub (crate) async fn api_admin_create_consumer(cfg: &ApisixConfig, id: &str, req: &ConsumerRequest) -> Result<TypedItem<ApisixConsumer>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.create_consumer(id, req).await.map_err(|e| InvalidRequest(e.to_string()))
+}
+
+#[instrument(skip_all)]
+pub (crate) async fn api_admin_delete_consumer(cfg: &ApisixConfig, id: &str) -> Result<()> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.delete_consumer(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
+}
+
+// endregion: consumer
