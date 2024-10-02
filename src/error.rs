@@ -16,6 +16,9 @@ pub enum ApisixClientError {
     #[error("Invalid request")]
     InvalidRequest(String),
 
+    #[error("Plugin config exception")]
+    PluginConfigException(String),
+
     /// Session timed out
     #[error("Session time-out exception")]
     SessionTimeoutException,

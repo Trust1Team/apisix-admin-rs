@@ -86,6 +86,18 @@ The required environment variables used:
 | ENABLE_POLLING_BY_LIB                     | Enable automatic polling (when `false` - polling MUST be implemented by callee |                |
 
 
+## Plugins implemented
+- [X] consumer-restriction
+- [X] apikey
+- [X] rate-limit
+- [X] proxy-rewrite
+- [X] authz-keycloak
+- [X] redirect
+- [X] openid-connect
+- [X] cors
+- [X] serverless
+- [X] forward-auth
+
 ## TODO
 
 This library started with basic CRUD operations for Apisix resources mostly used in projects. 
@@ -98,6 +110,7 @@ Is does not (yet) implement the full API, but feel free to contribute.
 - [ ] Service: patch use cases
 - [ ] Route: patch use cases
 - [ ] Missing Plugins (only adding plugins used, but feel free to extend))
+- [ ] Long list of plugins to implement
 
 ## Remarks
 
