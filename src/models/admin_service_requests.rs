@@ -22,49 +22,49 @@ impl ServiceBuilder {
         ServiceRequest::default().into()
     }
 
-    pub fn id(mut self, id: String) -> Self {
+    pub fn with_id(mut self, id: String) -> Self {
         self.id = Some(id);
         self
     }
 
     /// Identifier for the Service
-    pub fn name(mut self, name: String) -> Self {
+    pub fn with_name(mut self, name: String) -> Self {
         self.name = Some(name);
         self
     }
 
     /// Description of usage scenarios
-    pub fn desc(mut self, desc: String) -> Self {
+    pub fn with_desc(mut self, desc: String) -> Self {
         self.desc = Some(desc);
         self
     }
 
     /// Enables a websocket. Set to false by default
-    pub fn enable_websocket(mut self, enable_websocket: bool) -> Self {
+    pub fn with_enable_websocket(mut self, enable_websocket: bool) -> Self {
         self.enable_websocket = Some(enable_websocket);
         self
     }
 
     /// Configuration of the Upstream [@UpstreamRequest]
-    pub fn upstream(mut self, upstream: UpstreamRequest) -> Self {
+    pub fn with_upstream(mut self, upstream: UpstreamRequest) -> Self {
         self.upstream = Some(upstream);
         self
     }
 
     /// Id of the Upstream
-    pub fn upstream_id(mut self, upstream_id: String) -> Self {
+    pub fn with_upstream_id(mut self, upstream_id: String) -> Self {
         self.upstream_id = Some(upstream_id);
         self
     }
 
     /// Plugins that are executed during the request/response cycle
-    pub fn plugins(mut self, plugins: Plugins) -> Self {
+    pub fn with_plugins(mut self, plugins: Plugins) -> Self {
         self.plugins = plugins;
         self
     }
 
     /// Matches with any one of the multiple hosts specified in the form of a non-empty list
-    pub fn hosts(mut self, hosts: Vec<String>) -> Self {
+    pub fn with_hosts(mut self, hosts: Vec<String>) -> Self {
         self.hosts = Some(hosts);
         self
     }

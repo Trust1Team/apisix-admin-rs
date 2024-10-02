@@ -6,6 +6,7 @@ use crate::admin_service_responses::ApisixService;
 use crate::client::AdminConnector;
 use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
+use crate::consumer_group_responses::ApisixConsumerGroup;
 use crate::error::ApisixClientError::InvalidRequest;
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::UpstreamRequest;
@@ -95,3 +96,11 @@ pub async fn api_admin_delete_route(cfg: &ApisixConfig, id: &str) -> Result<()> 
     ac.delete_route(id).await.map(|_| ()).map_err(|e| InvalidRequest(e.to_string()))
 }
 // endregion: route
+
+// region: consumer group
+#[instrument(skip_all)]
+pub async fn api_admin_get_consumer_groups(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixConsumerGroup>>> {
+    let ac: AdminConnector =  AdminConnector::new(cfg).await;
+    ac.get_consumer_groups().await.map_err(|e| InvalidRequest(e.to_string()))
+}
+// endregion: consumer group

@@ -11,10 +11,11 @@ use crate::admin_route_requests::RouteRequest;
 use crate::admin_route_responses::ApisixRoute;
 use crate::admin_service_requests::ServiceRequest;
 use crate::admin_service_responses::ApisixService;
-use crate::client::admin::{path_check_version, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
+use crate::client::admin::{path_check_version, path_consumer_groups, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
 use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
+use crate::consumer_group_responses::ApisixConsumerGroup;
 use crate::error::ApisixClientError;
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::UpstreamRequest;
@@ -139,6 +140,15 @@ impl AdminConnector {
         delete(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
     }
     // endregion: route api
+
+    // region: consumer group api
+    #[instrument(skip(self))]
+    pub async fn get_consumer_groups(&self) -> Result<ListResponse<TypedItem<ApisixConsumerGroup>>> {
+        let path = format!("{}{}", self.cfg.admin_url, path_consumer_groups());
+        debug!("admin_api::get_consumer_groups: {}", path);
+        get::<ListResponse<TypedItem<ApisixConsumerGroup>>>(path.as_str(), self.cfg.admin_apikey.as_str(), self.cfg.client_request_timeout).await
+    }
+    // endregion: consumer group api
 
 
 }

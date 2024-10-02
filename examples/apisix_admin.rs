@@ -2,7 +2,7 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_route_with_id, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_route, admin_delete_service, admin_delete_upstream, admin_get_routes, admin_get_service, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType};
+use apisix_admin_client::{admin_check, admin_create_route_with_id, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_route, admin_delete_service, admin_delete_upstream, admin_get_consumer_groups, admin_get_route, admin_get_routes, admin_get_service, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType};
 use apisix_admin_client::admin_route_requests::{RouteBuilder, RouteRequest};
 use apisix_admin_client::admin_service_requests::{ServiceBuilder, ServiceRequest};
 use apisix_admin_client::common::ApisixTimeout;
@@ -53,7 +53,11 @@ async fn admin_ucs() -> Result<()> {
     let route_id = "test_route";
     let _ = admin_get_routes(&cfg).await.map(|_| info!("OK::admin_get_routes"))?;
     let _ = use_case_create_route_with_id(&cfg, route_id, service_id.to_string()).await?;
+    let _ = admin_get_route(&cfg, route_id).await.map(|_| info!("OK::admin_get_route"))?;
 
+    // Consumer Groups
+    let consumer_group_id = "freemium";
+    let _ = admin_get_consumer_groups(&cfg).await.map(|_| info!("OK::admin_get_consumer_groups"))?;
 
     // Clean up (reverse)
     let _ = admin_delete_route(&cfg, &route_id).await.map(|_| info!("OK::route_delete"))?;
@@ -69,12 +73,12 @@ async fn use_case_create_route_with_id(cfg: &ApisixConfig, id: impl Into<String>
     let route_id: String = id.into();
 
     let req: RouteRequest = RouteBuilder::new()
-        .id(route_id.clone())
-        .name("Test Route".to_string())
-        .desc("Test Route Description".to_string())
-        .uri("/test".to_string())
-        .methods(vec!["GET".to_string()])
-        .service_id(service_id)
+        .with_id(route_id.clone())
+        .with_name("Test Route".to_string())
+        .with_desc("Test Route Description".to_string())
+        .with_uri("/test".to_string())
+        .with_methods(vec!["GET".to_string()])
+        .with_service_id(service_id)
         .build()?;
 
     debug!("==> Creating Route with custom id: {:?}", serde_json::to_string(&req));
@@ -96,12 +100,12 @@ async fn use_case_create_service_with_id(cfg: &ApisixConfig, id: impl Into<Strin
     let plugins: Plugins = Plugins::default();
 
     let req = ServiceBuilder::new()
-        .id(service_id.clone())
-        .name("Test Service".to_string())
-        .desc("Test Service Description".to_string())
-        .enable_websocket(false)
-        .upstream_id(upstream_id)
-        .plugins(plugins)
+        .with_id(service_id.clone())
+        .with_name("Test Service".to_string())
+        .with_desc("Test Service Description".to_string())
+        .with_enable_websocket(false)
+        .with_upstream_id(upstream_id)
+        .with_plugins(plugins)
         .build()?;
 
     debug!("==> Creating Service with custom id: {:?}", serde_json::to_string(&req));
@@ -129,15 +133,15 @@ async fn use_cases_create_upstream_with_id(cfg: &ApisixConfig, id: impl Into<Str
     let node_defs: Value = serde_json::from_str(nodes).unwrap();
 
     let upstream_req = UpstreamBuilder::new()
-        .id(upstream_id.clone())
-        .name("Test Upstream".to_string())
-        .desc("Test Upstream Description".to_string())
-        .schema(UpstreamSchema::http)
-        .u_type(UpstreamType::roundrobin)
-        .nodes(node_defs)
-        .retries(3)
-        .retry_timeout(5)
-        .timeout(ApisixTimeout { connect: Some(0.5), send: Some(0.5), read: Some(0.5) })
+        .with_id(upstream_id.clone())
+        .with_name("Test Upstream".to_string())
+        .with_desc("Test Upstream Description".to_string())
+        .with_schema(UpstreamSchema::http)
+        .with_u_type(UpstreamType::roundrobin)
+        .with_nodes(node_defs)
+        .with_retries(3)
+        .with_retry_timeout(5)
+        .with_timeout(ApisixTimeout { connect: Some(0.5), send: Some(0.5), read: Some(0.5) })
         .build()?;
 
     debug!("==> Creating Upstream with custom id: {:?}", serde_json::to_string(&upstream_req));

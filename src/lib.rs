@@ -25,6 +25,7 @@ type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 use crate::client_admin_impl::{api_admin_check_version, api_admin_get_services, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
 use crate::common::{ListResponse, TypedItem};
+use crate::consumer_group_responses::ApisixConsumerGroup;
 use crate::models::admin_upstream_responses::ApisixUpstream;
 use crate::models::ctrl_responses::CtrlHealthCheckResponse;
 
@@ -121,6 +122,11 @@ pub async fn admin_create_route_with_id(cfg: &ApisixConfig, id: &str, req: &Rout
 /// Removes the Route with the specified id
 pub async fn admin_delete_route(cfg: &ApisixConfig, id: &str) -> Result<()> {
     client_admin_impl::api_admin_delete_route(cfg, id).await
+}
+
+/// Fetches a list of all configured Consumer Groups
+pub async fn admin_get_consumer_groups(cfg: &ApisixConfig) -> Result<ListResponse<TypedItem<ApisixConsumerGroup>>> {
+    client_admin_impl::api_admin_get_consumer_groups(cfg).await
 }
 
 // region: controller

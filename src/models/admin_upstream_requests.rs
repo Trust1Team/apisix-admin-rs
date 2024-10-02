@@ -30,14 +30,14 @@ impl UpstreamBuilder {
 
     /// Upstream ID
     /// TODO validate id See [generate_identifier]
-    pub fn id(mut self, id: String) -> Self {
+    pub fn with_id(mut self, id: String) -> Self {
         self.id = Some(id);
         self
     }
 
     /// Load balancing algorithm to be used, and the default value is roundrobin.
     /// See [UpstreamType]
-    pub fn u_type(mut self, u_type: UpstreamType) -> Self {
+    pub fn with_u_type(mut self, u_type: UpstreamType) -> Self {
         self.type_field = Some(u_type);
         self
     }
@@ -52,7 +52,7 @@ impl UpstreamBuilder {
     /// Restrictions: can not be used with `service_name`
     ///
     /// Example: `192.168.1.100:80`, `[::1]:80`
-    pub fn nodes(mut self, nodes: Value) -> Self {
+    pub fn with_nodes(mut self, nodes: Value) -> Self {
         self.nodes = Some(nodes);
         self
     }
@@ -60,7 +60,7 @@ impl UpstreamBuilder {
     /// Service name used for service discovery
     ///
     /// Restrictions: can not be used with `nodes`
-    pub fn service_name(mut self, service_name: String) -> Self {
+    pub fn with_service_name(mut self, service_name: String) -> Self {
         self.service_name = Some(service_name);
         self.discovery_type = Some("eureka".to_string()); //default
         self.nodes = None; //reset nodes when service name is used
@@ -69,7 +69,7 @@ impl UpstreamBuilder {
 
     /// The type of service discovery to be used. The default value is eureka.
     /// Required when `service_name` is defined
-    pub fn discovery_type(mut self, discovery_type: String) -> Self {
+    pub fn with_discovery_type(mut self, discovery_type: String) -> Self {
         self.discovery_type = Some(discovery_type);
         self
     }
@@ -77,13 +77,13 @@ impl UpstreamBuilder {
     /// Sets the number of retries while passing the request to Upstream using the underlying Nginx mechanism.
     /// Set according to the number of available backend nodes by default.
     /// Setting this to 0 disables retry.
-    pub fn retries(mut self, retries: i32) -> Self {
+    pub fn with_retries(mut self, retries: i32) -> Self {
         self.retries = Some(retries);
         self
     }
 
     /// Timeout to continue with retries. Setting this to 0 disables the retry timeout.
-    pub fn retry_timeout(mut self, retry_timeout: i32) -> Self {
+    pub fn with_retry_timeout(mut self, retry_timeout: i32) -> Self {
         self.retry_timeout = Some(retry_timeout);
         self
     }
@@ -92,19 +92,19 @@ impl UpstreamBuilder {
     /// and sending and receiving messages to and from the Upstream.
     ///
     /// Example: {"connect": 0.5,"send": 0.5,"read": 0.5}
-    pub fn timeout(mut self, timeout: ApisixTimeout) -> Self {
+    pub fn with_timeout(mut self, timeout: ApisixTimeout) -> Self {
         self.timeout = Some(timeout);
         self
     }
 
     /// Identifier for the Upstream
-    pub fn name(mut self, name: String) -> Self {
+    pub fn with_name(mut self, name: String) -> Self {
         self.name = Some(name);
         self
     }
 
     /// Description of usage scenarios
-    pub fn desc(mut self, desc: String) -> Self {
+    pub fn with_desc(mut self, desc: String) -> Self {
         self.desc = Some(desc);
         self
     }
@@ -113,7 +113,7 @@ impl UpstreamBuilder {
     /// For an L7 proxy, this value can be one of http, https, grpc, grpcs.
     /// For an L4 proxy, this value could be one of tcp, udp, tls.
     /// Defaults to http.
-    pub fn schema(mut self, scheme: UpstreamSchema) -> Self {
+    pub fn with_schema(mut self, scheme: UpstreamSchema) -> Self {
         self.scheme = Some(scheme);
         self
     }
@@ -262,15 +262,15 @@ mod tests {
         let nodes = serde_json::from_str(nodes).unwrap();
 
         let upstream_req = UpstreamBuilder::new()
-            .id("test_upstream".to_string())
-            .name("Test Upstream".to_string())
-            .desc("Test Upstream Description".to_string())
-            .schema(UpstreamSchema::https)
-            .u_type(UpstreamType::roundrobin)
-            .nodes(nodes)
-            .retries(3)
-            .retry_timeout(5)
-            .timeout(ApisixTimeout { connect: Some(0.5), send: Some(0.5), read: Some(0.5) })
+            .with_id("test_upstream".to_string())
+            .with_name("Test Upstream".to_string())
+            .with_desc("Test Upstream Description".to_string())
+            .with_schema(UpstreamSchema::https)
+            .with_u_type(UpstreamType::roundrobin)
+            .with_nodes(nodes)
+            .with_retries(3)
+            .with_retry_timeout(5)
+            .with_timeout(ApisixTimeout { connect: Some(0.5), send: Some(0.5), read: Some(0.5) })
             .build().unwrap();
         info!("Upstream Request: {:?}", to_string(&upstream_req));
         assert!(true)
