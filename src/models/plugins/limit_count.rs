@@ -18,9 +18,10 @@ pub struct LimitCountBuilder {
     pub rejected_code: Option<i64>,
     #[validate(length(min = 1))]
     pub rejected_msg: Option<String>,
-    pub policy: Option<String>,
+    pub policy: Option<LimitCountPolicy>,
     pub allow_degradation: Option<bool>,
     pub show_limit_quota_headers: Option<bool>,
+    #[validate(length(min = 1))]
     pub group: Option<String>,
     pub redis_host: Option<String>,
     pub redis_port: Option<i64>,
@@ -29,6 +30,7 @@ pub struct LimitCountBuilder {
     pub redis_ssl: Option<bool>,
     pub redis_ssl_verify: Option<bool>,
     pub redis_database: Option<i64>,
+    #[validate(range(min = 1))]
     pub redis_timeout: Option<i64>,
     pub redis_cluster_nodes: Option<Vec<String>>,
     pub redis_cluster_name: Option<String>,
@@ -72,8 +74,8 @@ impl LimitCountBuilder {
         self
     }
 
-    pub fn with_policy(mut self, policy: impl Into<String>) -> Self {
-        self.policy = Some(policy.into());
+    pub fn with_policy(mut self, policy: LimitCountPolicy) -> Self {
+        self.policy = Some(policy);
         self
     }
 
@@ -190,7 +192,7 @@ pub struct LimitCount {
     pub key: Option<String>,
     pub rejected_code: Option<i64>,
     pub rejected_msg: Option<String>,
-    pub policy: Option<String>,
+    pub policy: Option<LimitCountPolicy>,
     pub allow_degradation: Option<bool>,
     pub show_limit_quota_headers: Option<bool>,
     pub group: Option<String>,
@@ -277,6 +279,16 @@ pub enum LimitCountKeyType {
     constant,
 }
 
+#[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize, Display)]
+#[allow(non_camel_case_types)]
+#[non_exhaustive]
+pub enum LimitCountPolicy {
+    local,
+    redis,
+    #[strum(serialize = "redis-cluster")]
+    redis_cluster,
+}
+
 // region: tests
 #[cfg(test)]
 mod tests {
@@ -286,6 +298,7 @@ mod tests {
     use tracing_test::traced_test;
     use crate::models::admin_upstream_requests::UpstreamType;
     use crate::models::common::TypedItem;
+    use crate::plugins::ProxyRewrite;
 
     #[traced_test]
     #[tokio::test]
@@ -297,6 +310,27 @@ mod tests {
         assert_eq!(nodes.key_type, None);
         assert_eq!(nodes.key, None);
         assert_eq!(nodes.rejected_code, None);
+    }
+
+    #[traced_test]
+    #[tokio::test]
+    async fn test_parse_limit_count_response() {
+        let nodes = r#"
+        {
+            "count": 2,
+            "time_window": 60,
+            "rejected_code": 503,
+            "key_type": "var",
+            "key": "remote_addr",
+            "policy": "redis-cluster"
+        }"#;
+        let nodes: LimitCount = serde_json::from_str(nodes).unwrap();
+        assert_eq!(nodes.count.unwrap(), 2);
+        assert_eq!(nodes.time_window.unwrap(), 60);
+        assert_eq!(nodes.rejected_code.unwrap(), 503);
+        assert_eq!(nodes.key_type.unwrap(), LimitCountKeyType::var);
+        assert_eq!(nodes.key.unwrap(), "remote_addr");
+        assert_eq!(nodes.policy.unwrap(), LimitCountPolicy::redis_cluster);
     }
 
     #[traced_test]
