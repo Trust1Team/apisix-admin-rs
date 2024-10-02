@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::models::generate_identifier;
-use crate::plugins::Plugins;
+use crate::models::{generate_identifier, Plugins};
 use crate::{Result};
 
 #[serde_with::skip_serializing_none]

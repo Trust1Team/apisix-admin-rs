@@ -5,16 +5,11 @@
 //! Maintained by [Trust1Team](https://trust1team.com) for [Apisix](https://apisix.apache.org/)
 
 use serde_json::Value;
-mod models;
 use crate::config::ApisixConfig;
 pub mod client;
 pub mod error;
+pub mod models;
 pub mod config;
-pub use models::*;
-use crate::admin_route_requests::RouteRequest;
-use crate::admin_route_responses::ApisixRoute;
-use crate::admin_service_requests::ServiceRequest;
-use crate::admin_service_responses::ApisixService;
 
 pub mod client_admin_impl;
 pub mod client_ctrl_impl;
@@ -24,13 +19,10 @@ type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 /// Common models are exposed
 use crate::client_admin_impl::{api_admin_check_version, api_admin_get_services, api_admin_get_upstreams};
 use crate::client_ctrl_impl::api_ctrl_schema;
-use crate::common::{ListResponse, TypedItem};
-use crate::consumer_group_requests::ConsumerGroupRequest;
-use crate::consumer_group_responses::ApisixConsumerGroup;
-use crate::consumer_requests::ConsumerRequest;
-use crate::consumer_responses::ApisixConsumer;
-use crate::models::admin_upstream_responses::ApisixUpstream;
+use crate::models::{ApisixConsumer, ApisixConsumerGroup, ApisixRoute, ApisixService, ApisixUpstream, ConsumerGroupRequest, ConsumerRequest, RouteRequest, ServiceRequest};
+use crate::models::common::{ListResponse, TypedItem};
 use crate::models::ctrl_responses::CtrlHealthCheckResponse;
+use crate::models::UpstreamRequest;
 
 /// Get configuration based on the environment variables (default config override)
 /// Function will panic when the environment variables are not set

@@ -7,21 +7,12 @@ use anyhow::Result;
 use reqwest::Response;
 use serde_json::Value;
 use tracing::{debug, info, instrument};
-use crate::admin_route_requests::RouteRequest;
-use crate::admin_route_responses::ApisixRoute;
-use crate::admin_service_requests::ServiceRequest;
-use crate::admin_service_responses::ApisixService;
 use crate::client::admin::{path_check_version, path_consumer, path_consumer_group_with_id, path_consumer_groups, path_consumer_with_id, path_consumer_with_id_and_path, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
 use crate::client::reqwest_generic::{delete, get, head, post, put};
-use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
-use crate::consumer_group_requests::ConsumerGroupRequest;
-use crate::consumer_group_responses::ApisixConsumerGroup;
-use crate::consumer_requests::ConsumerRequest;
-use crate::consumer_responses::ApisixConsumer;
 use crate::error::ApisixClientError;
-use crate::models::admin_upstream_responses::ApisixUpstream;
-use crate::models::UpstreamRequest;
+use crate::models::{ApisixConsumer, ApisixConsumerGroup, ApisixRoute, ApisixService, ApisixUpstream, ConsumerGroupRequest, ConsumerRequest, RouteRequest, ServiceRequest, UpstreamRequest};
+use crate::models::common::{ListResponse, TypedItem};
 
 #[derive(Debug)]
 pub struct AdminConnector {

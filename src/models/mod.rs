@@ -1,18 +1,28 @@
 pub mod common;
 pub mod ctrl_responses;
-pub mod admin_upstream_responses;
-pub mod admin_upstream_requests;
-pub mod admin_service_requests;
-pub mod admin_service_responses;
 pub mod plugins;
-pub mod admin_route_requests;
-pub mod admin_route_responses;
-pub mod consumer_group_requests;
-pub mod consumer_group_responses;
-pub mod consumer_requests;
-pub mod consumer_responses;
+mod admin_upstream_responses;
+mod admin_upstream_requests;
+mod admin_service_requests;
+mod admin_service_responses;
+mod admin_route_requests;
+mod admin_route_responses;
+mod consumer_group_requests;
+mod consumer_group_responses;
+mod consumer_requests;
+mod consumer_responses;
 
 pub use admin_upstream_requests::*;
+pub use admin_upstream_responses::*;
+pub use admin_service_requests::*;
+pub use admin_service_responses::*;
+pub use admin_route_requests::*;
+pub use admin_route_responses::*;
+pub use consumer_group_requests::*;
+pub use consumer_group_responses::*;
+pub use consumer_requests::*;
+pub use consumer_responses::*;
+pub use plugins::*;
 
 use rand::distr::Alphanumeric;
 use serde::de::Visitor;

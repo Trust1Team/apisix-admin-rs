@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
-use crate::common::ApisixTimeout;
-use crate::models::generate_identifier;
-use crate::plugins::Plugins;
+use crate::models::{generate_identifier, Plugins};
 use crate::UpstreamRequest;
 use crate::{Result};
+use crate::models::common::ApisixTimeout;
 
 #[serde_with::skip_serializing_none]
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

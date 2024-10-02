@@ -2,15 +2,11 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use serde_json::Value;
-use apisix_admin_client::{admin_check, admin_create_consumer_with_name, admin_create_consumer_group_with_id, admin_create_route_with_id, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_consumer_group, admin_delete_route, admin_delete_service, admin_delete_upstream, admin_get_consumer_group, admin_get_consumer_groups, admin_get_consumers, admin_get_route, admin_get_routes, admin_get_service, admin_get_services, admin_get_upstream, admin_get_upstreams, UpstreamBuilder, UpstreamSchema, UpstreamType, admin_get_consumer, admin_delete_consumer};
-use apisix_admin_client::admin_route_requests::{RouteBuilder, RouteRequest};
-use apisix_admin_client::admin_service_requests::{ServiceBuilder, ServiceRequest};
-use apisix_admin_client::common::ApisixTimeout;
+use apisix_admin_client::{admin_check, admin_create_consumer_with_name, admin_create_consumer_group_with_id, admin_create_route_with_id, admin_create_service_with_id, admin_create_upstream_with_id, admin_delete_consumer_group, admin_delete_route, admin_delete_service, admin_delete_upstream, admin_get_consumer_group, admin_get_consumer_groups, admin_get_consumers, admin_get_route, admin_get_routes, admin_get_service, admin_get_services, admin_get_upstream, admin_get_upstreams, admin_get_consumer, admin_delete_consumer};
 use apisix_admin_client::config::{ApisixConfig, ApisixConfigBuilder};
-use apisix_admin_client::consumer_group_requests::{ConsumerGroupBuilder, ConsumerGroupRequest};
-use apisix_admin_client::consumer_requests::{ConsumerBuilder, ConsumerRequest};
 use apisix_admin_client::error::ApisixClientError;
-use apisix_admin_client::plugins::{Plugin, Plugins};
+use apisix_admin_client::models::{ConsumerBuilder, ConsumerGroupBuilder, ConsumerGroupRequest, ConsumerRequest, Plugins, RouteBuilder, RouteRequest, ServiceBuilder, UpstreamBuilder, UpstreamSchema, UpstreamType};
+use apisix_admin_client::models::common::ApisixTimeout;
 
 type Result<T> = std::result::Result<T, ApisixClientError>;
 

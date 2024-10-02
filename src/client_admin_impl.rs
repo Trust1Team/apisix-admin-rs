@@ -1,18 +1,13 @@
 use tracing::instrument;
-use crate::admin_route_requests::RouteRequest;
-use crate::admin_route_responses::ApisixRoute;
-use crate::admin_service_requests::ServiceRequest;
-use crate::admin_service_responses::ApisixService;
+use crate::RouteRequest;
+use crate::ApisixRoute;
+use crate::ServiceRequest;
+use crate::ApisixService;
 use crate::client::AdminConnector;
-use crate::common::{ListResponse, TypedItem};
 use crate::config::ApisixConfig;
-use crate::consumer_group_requests::ConsumerGroupRequest;
-use crate::consumer_group_responses::ApisixConsumerGroup;
-use crate::consumer_requests::ConsumerRequest;
-use crate::consumer_responses::ApisixConsumer;
 use crate::error::ApisixClientError::InvalidRequest;
-use crate::models::admin_upstream_responses::ApisixUpstream;
-use crate::models::UpstreamRequest;
+use crate::models::common::{ListResponse, TypedItem};
+use crate::models::{ApisixConsumer, ApisixConsumerGroup, ApisixUpstream, ConsumerGroupRequest, ConsumerRequest, UpstreamRequest};
 
 type Result<T> = std::result::Result<T, crate::error::ApisixClientError>;
 

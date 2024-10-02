@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use crate::plugins::Plugins;
 use crate::{Result};
+use crate::models::Plugins;
 
 #[serde_with::skip_serializing_none]
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

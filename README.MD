@@ -89,7 +89,7 @@ The required environment variables used:
 ## Plugins implemented
 - [X] consumer-restriction
 - [X] apikey
-- [X] rate-limit
+- [X] limit-count
 - [X] proxy-rewrite
 - [X] authz-keycloak
 - [X] redirect

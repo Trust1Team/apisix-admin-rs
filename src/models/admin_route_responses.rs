@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::common::ApisixTimeout;
-use crate::plugins::Plugins;
+use crate::models::common::ApisixTimeout;
+use crate::models::Plugins;
 use crate::UpstreamRequest;
 
 #[serde_with::skip_serializing_none]

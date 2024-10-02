@@ -3,7 +3,7 @@ use serde_json::Value;
 use strum_macros::{Display, EnumString};
 use crate::models::generate_identifier;
 use crate::{Result};
-use crate::common::ApisixTimeout;
+use crate::models::common::ApisixTimeout;
 
 #[serde_with::skip_serializing_none]
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

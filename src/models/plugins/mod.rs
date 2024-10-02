@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 
 mod key_auth;
-pub use key_auth::KeyAuth;
 mod proxy_rewrite;
 mod limit_count;
 
-pub use proxy_rewrite::ProxyRewrite;
+pub use key_auth::*;
+pub use proxy_rewrite::*;
+pub use limit_count::*;
 
 // region: common
 #[serde_with::skip_serializing_none]

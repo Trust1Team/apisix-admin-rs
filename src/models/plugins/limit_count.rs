@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumString};
-use crate::plugins::Plugin;
 use validator::Validate;
 use crate::error::ApisixClientError;
 use crate::{Result};
+use crate::models::Plugin;
 
 #[serde_with::skip_serializing_none]
 #[derive(Validate, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -298,7 +298,6 @@ mod tests {
     use tracing_test::traced_test;
     use crate::models::admin_upstream_requests::UpstreamType;
     use crate::models::common::TypedItem;
-    use crate::plugins::ProxyRewrite;
 
     #[traced_test]
     #[tokio::test]
