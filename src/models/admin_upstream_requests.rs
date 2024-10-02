@@ -120,8 +120,8 @@ impl UpstreamBuilder {
     pub fn build(&self) -> Result<UpstreamRequest> {
         Ok(UpstreamRequest {
             id: self.id.clone(),
-            retries: self.retries.clone(),
-            retry_timeout: self.retry_timeout.clone(),
+            retries: self.retries,
+            retry_timeout: self.retry_timeout,
             timeout: self.timeout.clone(),
             nodes: self.nodes.clone(),
             service_name: self.service_name.clone(),
@@ -219,10 +219,10 @@ pub enum UpstreamTypeChashAuxiliary {
 impl From<String> for UpstreamTypeChashAuxiliary {
     fn from(value: String) -> Self {
         match value.to_uppercase().as_str() {
-            "vars" => UpstreamTypeChashAuxiliary::vars,
-            "header" => UpstreamTypeChashAuxiliary::header,
-            "cookie" => UpstreamTypeChashAuxiliary::cookie,
-            "consumer" => UpstreamTypeChashAuxiliary::consumer,
+            "VARS" => UpstreamTypeChashAuxiliary::vars,
+            "HEADER" => UpstreamTypeChashAuxiliary::header,
+            "COOKIE" => UpstreamTypeChashAuxiliary::cookie,
+            "CONSUMER" => UpstreamTypeChashAuxiliary::consumer,
             _ => UpstreamTypeChashAuxiliary::vars
         }
     }

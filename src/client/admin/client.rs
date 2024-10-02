@@ -5,26 +5,16 @@
 
 use anyhow::Result;
 use reqwest::Response;
-use serde_json::Value;
-use tracing::{debug, info, instrument};
-use crate::client::admin::{path_check_version, path_consumer, path_consumer_group_with_id, path_consumer_groups, path_consumer_with_id, path_consumer_with_id_and_path, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams, ADMIN_PATH};
-use crate::client::reqwest_generic::{delete, get, head, post, put};
+use tracing::{debug, instrument};
+use crate::client::admin::{path_check_version, path_consumer, path_consumer_group_with_id, path_consumer_groups, path_consumer_with_id, path_route_with_id, path_routes, path_service_with_id, path_services, path_upstream_with_id, path_upstreams};
+use crate::client::reqwest_generic::{delete, get, head, put};
 use crate::config::ApisixConfig;
-use crate::error::ApisixClientError;
 use crate::models::{ApisixConsumer, ApisixConsumerGroup, ApisixRoute, ApisixService, ApisixUpstream, ConsumerGroupRequest, ConsumerRequest, RouteRequest, ServiceRequest, UpstreamRequest};
 use crate::models::common::{ListResponse, TypedItem};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct AdminConnector {
     pub cfg: ApisixConfig,
-}
-
-impl Default for AdminConnector {
-    fn default() -> Self {
-        AdminConnector {
-            cfg: ApisixConfig::default(),
-        }
-    }
 }
 
 impl AdminConnector {
@@ -33,7 +23,6 @@ impl AdminConnector {
     pub (crate) async fn new(cfg: &ApisixConfig) -> Self {
         AdminConnector {
             cfg: cfg.clone(),
-            ..Default::default()
         }
     }
 

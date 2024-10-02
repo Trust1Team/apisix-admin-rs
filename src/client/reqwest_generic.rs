@@ -1,24 +1,21 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::{bail, Result};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use std::fmt::Debug;
-use std::future::Future;
-use std::path::PathBuf;
 use std::time::Duration;
 use reqwest::Response;
-use tokio::fs::File;
-use tokio::time::sleep;
-use tracing::{debug, error};
+use tracing::debug;
 
-const HEADER_CONTENT_TYPE: &'static str = "content-type";
-const HEADER_CONTENT_TYPE_DEFAULT: &'static str = "application/json";
-const HEADER_USER_AGENT: &'static str = "User-Agent";
-const HEADER_API_KEY: &'static str = "X-API-KEY";
-const HEADER_USER_AGENT_VERSION: &'static str = env!("CARGO_PKG_VERSION");
-const HEADER_USER_AGENT_RUST_VERSION: &'static str = env!("CARGO_PKG_RUST_VERSION");
+const HEADER_CONTENT_TYPE: &str = "content-type";
+const HEADER_CONTENT_TYPE_DEFAULT: &str = "application/json";
+const HEADER_USER_AGENT: &str = "User-Agent";
+const HEADER_API_KEY: &str = "X-API-KEY";
+const HEADER_USER_AGENT_VERSION: &str = env!("CARGO_PKG_VERSION");
+const HEADER_USER_AGENT_RUST_VERSION: &str = env!("CARGO_PKG_RUST_VERSION");
 
 /// Generic get JWT based on APIKEY
 /// Not used for Apisix client
+#[allow(dead_code)]
 pub async fn get_token<R>(url: &str, apikey: &str, timeout_millis: Option<u64>) -> Result<R>
 where
     R: DeserializeOwned,
@@ -118,6 +115,7 @@ pub async fn delete(
 
 /// Generic POST request
 /// Connection pooling is provided in `reqwest`
+#[allow(dead_code)]
 pub async fn post<T, R>(
     url: &str,
     apikey: &str,
@@ -187,6 +185,7 @@ pub async fn post_empty_body(
 
 // Generic POST request
 /// Connection pooling is provided in `reqwest`
+#[allow(dead_code)]
 pub async fn post_json_value<T>(
     url: &str,
     apikey: &str,

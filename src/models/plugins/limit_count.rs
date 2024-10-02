@@ -7,7 +7,7 @@ use crate::models::Plugin;
 
 /// Builder to create a LimitCount
 #[serde_with::skip_serializing_none]
-#[derive(Validate, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Validate, Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LimitCountBuilder {
     #[validate(range(min = 1))]
     pub count: Option<i64>,
@@ -188,7 +188,7 @@ impl LimitCountBuilder {
 /// The plugin is using Fixed Window algorithm.
 /// [Documentation](https://apisix.apache.org/docs/apisix/plugins/limit-count/)
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LimitCount {
     pub count: Option<i64>,
     pub time_window: Option<i64>,
@@ -212,35 +212,6 @@ pub struct LimitCount {
     pub redis_cluster_name: Option<String>,
     pub redis_cluster_ssl: Option<bool>,
     pub redis_cluster_ssl_verify: Option<bool>,
-}
-
-impl Default for LimitCount {
-    fn default() -> Self {
-        LimitCount {
-            count: None,
-            time_window: None,
-            key_type: None,
-            key: None,
-            rejected_code: None,
-            rejected_msg: None,
-            policy: None,
-            allow_degradation: None,
-            show_limit_quota_headers: None,
-            group: None,
-            redis_host: None,
-            redis_port: None,
-            redis_username: None,
-            redis_password: None,
-            redis_ssl: None,
-            redis_ssl_verify: None,
-            redis_database: None,
-            redis_timeout: None,
-            redis_cluster_nodes: None,
-            redis_cluster_name: None,
-            redis_cluster_ssl: None,
-            redis_cluster_ssl_verify: None,
-        }
-    }
 }
 
 impl From<LimitCount> for LimitCountBuilder {
@@ -328,7 +299,7 @@ mod tests {
             "rejected_code": 503,
             "key_type": "var",
             "key": "remote_addr",
-            "policy": "redis-cluster"
+            "policy": "redis_cluster"
         }"#;
         let nodes: LimitCount = serde_json::from_str(nodes).unwrap();
         assert_eq!(nodes.count.unwrap(), 2);

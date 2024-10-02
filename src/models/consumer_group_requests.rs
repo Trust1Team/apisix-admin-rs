@@ -3,7 +3,7 @@ use crate::models::{generate_identifier, Plugins};
 use crate::{Result};
 
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ConsumerGroupBuilder {
     pub plugins: Plugins,
     pub id: Option<String>,

@@ -2,7 +2,7 @@ use std::ops::Index;
 #[allow(dead_code)]
 use tracing::{error, info, warn, instrument, debug};
 use apisix_admin_client::error::ApisixClientError;
-use apisix_admin_client::models::{KeyAuthBuilder, LimitCountBuilder, LimitCountPolicy, Plugin, Plugins, ProxyRewriteBuilder, ProxyRewriteHeaders, ProxyRewriteMethod};
+use apisix_admin_client::models::{ConsumerRestrictionBuilder, ConsumerRestrictionType, KeyAuthBuilder, LimitCountBuilder, LimitCountPolicy, Plugin, Plugins, ProxyRewriteBuilder, ProxyRewriteHeaders, ProxyRewriteMethod};
 
 type Result<T> = std::result::Result<T, ApisixClientError>;
 
@@ -62,6 +62,14 @@ async fn admin_plugin_config() -> Result<()> {
         .build()?;
     debug!("LimitCountPlugin::OK::{:?}", plc);
     info!("LimitCountPlugin::OK");
+
+    // ConsumerRestriction Plugin
+    let pcr = ConsumerRestrictionBuilder::new()
+        .with_type(ConsumerRestrictionType::consumer_group_id)
+        .with_whitelist(vec!["freemium".to_string()])
+        .build()?;
+    debug!("ConsumerRestrictionPlugin::OK::{:?}", pcr);
+    info!("ConsumerRestrictionPlugin::OK");
 
     // Plugin collection
     let plugins: Plugins = Plugins {

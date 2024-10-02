@@ -14,7 +14,7 @@ pub struct ConsumerBuilder {
 impl ConsumerBuilder {
 
     pub fn new() -> Self {
-        ConsumerBuilder::default().into()
+        ConsumerRequest::default().into()
     }
 
     /// Name of the Consumer
@@ -51,23 +51,12 @@ impl ConsumerBuilder {
 }
 
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ConsumerRequest {
     pub plugins: Option<Plugins>,
     pub username: Option<String>,
     pub group_id: Option<String>,
     pub desc: Option<String>,
-}
-
-impl Default for ConsumerRequest {
-    fn default() -> Self {
-        ConsumerRequest {
-            plugins: None,
-            username: None,
-            group_id: None,
-            desc: None,
-        }
-    }
 }
 
 impl From<ConsumerRequest> for ConsumerBuilder {

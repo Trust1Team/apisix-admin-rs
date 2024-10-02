@@ -23,9 +23,7 @@ pub use consumer_group_responses::*;
 pub use consumer_requests::*;
 pub use consumer_responses::*;
 pub use plugins::*;
-
 use rand::distr::Alphanumeric;
-use serde::de::Visitor;
 
 /// ID's as a text string must be of a length between 1 and 64 characters
 /// and they should only contain uppercase, lowercase, numbers

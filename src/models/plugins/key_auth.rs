@@ -4,7 +4,7 @@ use crate::models::Plugin;
 
 /// Builder pattern to create a KeyAuth
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct KeyAuthBuilder {
     pub hide_credentials: Option<bool>,
     pub query: Option<String>,
@@ -50,20 +50,11 @@ impl KeyAuthBuilder {
 /// the query string or the header to authenticate their requests.
 /// [Documentation](https://apisix.apache.org/docs/apisix/plugins/key-auth/)
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct KeyAuth {
     pub hide_credentials: Option<bool>,
     pub query: Option<String>,
     pub header: Option<String>,
-}
-impl Default for KeyAuth {
-    fn default() -> Self {
-        KeyAuth {
-            hide_credentials: None,
-            query: None,
-            header: None,
-        }
-    }
 }
 
 impl From<KeyAuth> for KeyAuthBuilder {

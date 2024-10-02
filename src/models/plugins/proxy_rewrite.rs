@@ -6,7 +6,7 @@ use crate::models::Plugin;
 
 /// Builder pattern to create a ProxyRewrite
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ProxyRewriteBuilder {
     pub uri: Option<String>,
     pub method: Option<ProxyRewriteMethod>,
@@ -87,7 +87,7 @@ impl ProxyRewriteBuilder {
 /// The proxy-rewrite Plugin rewrites Upstream proxy information such as scheme, uri and host.
 /// [Documentation](https://apisix.apache.org/docs/apisix/plugins/proxy-rewrite/)
 #[serde_with::skip_serializing_none]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ProxyRewrite {
     pub uri: Option<String>,
     pub method: Option<ProxyRewriteMethod>,
@@ -95,19 +95,6 @@ pub struct ProxyRewrite {
     pub host: Option<String>,
     pub use_real_request_uri_unsafe: Option<bool>,
     pub headers: Option<ProxyRewriteHeaders>,
-}
-
-impl Default for ProxyRewrite {
-    fn default() -> Self {
-        ProxyRewrite {
-            uri: None,
-            method: None,
-            regex_uri: None,
-            host: None,
-            use_real_request_uri_unsafe: None,
-            headers: None,
-        }
-    }
 }
 
 impl From<ProxyRewrite> for ProxyRewriteBuilder {

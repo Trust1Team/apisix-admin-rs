@@ -50,7 +50,7 @@ impl From<ApisixConfig> for ApisixConfigBuilder {
 ///     .with_admin_url("http://localhost:9180") // DEV environment
 ///     .build();
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct ApisixConfigBuilder {
     url: Option<String>,
     admin_url: Option<String>,
@@ -95,7 +95,7 @@ impl ApisixConfigBuilder {
             admin_url: self.admin_url.clone().ok_or(ApisixClientError::ConfigMissingException("admin_url"))?,
             control_url: self.control_url.clone().ok_or(ApisixClientError::ConfigMissingException("control_url"))?,
             admin_apikey: self.admin_apikey.clone().ok_or(ApisixClientError::ConfigMissingException("admin_path"))?,
-            client_request_timeout: self.client_request_timeout.clone().ok_or(ApisixClientError::ConfigMissingException("admin_path"))?,
+            client_request_timeout: self.client_request_timeout.ok_or(ApisixClientError::ConfigMissingException("admin_path"))?,
         })
     }
 
@@ -136,9 +136,9 @@ impl ApisixConfig {
 }
 
 fn get_env(name: &'static str) -> Result<String> {
-    env::var(name).map_err(|_| ApisixClientError::ConfigMissingException(name).into())
+    env::var(name).map_err(|_| ApisixClientError::ConfigMissingException(name))
 }
 
 fn get_env_u64(name: &'static str) -> Result<u64> {
-    env::var(name).unwrap().parse().map_err(|_| ApisixClientError::ConfigMissingException(name).into())
+    env::var(name).unwrap().parse().map_err(|_| ApisixClientError::ConfigMissingException(name))
 }

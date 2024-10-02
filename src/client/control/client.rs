@@ -5,29 +5,20 @@
 
 use anyhow::Result;
 use serde_json::Value;
-use tracing::{debug, info, instrument};
-use crate::client::reqwest_generic::{get, head, post, post_empty_body};
+use tracing::{debug, instrument};
+use crate::client::reqwest_generic::{get, post_empty_body};
 use crate::config::ApisixConfig;
-use crate::error::ApisixClientError;
 use crate::models::ctrl_responses::CtrlHealthCheckResponse;
 // region: Path definitions
 
-fn get_schema() -> String { format!("{}", "/v1/schema") }
-fn get_health_check() -> String { format!("{}", "/v1/healthcheck") }
-fn get_garbage_collect() -> String { format!("{}", "/v1/gc") }
+fn get_schema() -> String { "/v1/schema".to_string() }
+fn get_health_check() -> String { "/v1/healthcheck".to_string() }
+fn get_garbage_collect() -> String { "/v1/gc".to_string() }
 // endregion: Path definitions
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct ControllerConnector {
     pub cfg: ApisixConfig,
-}
-
-impl Default for ControllerConnector {
-    fn default() -> Self {
-        ControllerConnector {
-            cfg: ApisixConfig::default(),
-        }
-    }
 }
 
 impl ControllerConnector {
@@ -36,7 +27,6 @@ impl ControllerConnector {
     pub async fn new(cfg: &ApisixConfig) -> Self {
         ControllerConnector {
             cfg: cfg.clone(),
-            ..Default::default()
         }
     }
 
