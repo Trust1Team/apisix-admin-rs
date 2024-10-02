@@ -44,7 +44,7 @@ mod tests {
         }"#;
         let nodes: TypedItem<ApisixConsumer> = serde_json::from_str(nodes).unwrap();
         assert_eq!(nodes.key.unwrap(), "/apisix/consumers/readmycards");
-        assert_eq!(nodes.value.clone().unwrap().username, "readmycards");
+        assert_eq!(nodes.value.clone().unwrap().username.unwrap(), "readmycards");
         assert_eq!(nodes.value.clone().unwrap().group_id.unwrap(), "trust1team");
         assert_eq!(nodes.value.clone().unwrap().create_time.unwrap(), 1727847549);
         assert_eq!(nodes.value.clone().unwrap().update_time.unwrap(), 1727847549);

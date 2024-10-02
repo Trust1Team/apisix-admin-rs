@@ -1,5 +1,4 @@
-use serde::{Deserialize, Serialize, Serializer};
-use serde::ser::SerializeSeq;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use strum_macros::{Display, EnumString};
 use crate::models::generate_identifier;
