@@ -4,6 +4,7 @@ mod key_auth;
 mod proxy_rewrite;
 mod limit_count;
 mod consumer_restriction;
+//mod authz_keycloak;
 
 pub use key_auth::*;
 pub use proxy_rewrite::*;
